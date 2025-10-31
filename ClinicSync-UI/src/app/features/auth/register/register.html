@@ -1,0 +1,256 @@
+<div class="register-wrapper">
+  <div class="register-container">
+    <!-- Left Side - Branding -->
+    <div class="brand-section">
+      <div class="brand-content">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <path d="M24 2L30 10L40 6L42 16L34 22L42 30L40 40L30 36L24 44L18 36L8 40L6 30L14 22L6 16L8 6L18 10L24 2Z" 
+                    fill="#2563eb"/>
+              <circle cx="24" cy="24" r="8" fill="#059669"/>
+              <path d="M20 24L22 26L28 20" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h1 class="brand-name">Clinic Sync</h1>
+        </div>
+        
+        <div class="security-illustration">
+          <div class="shield-icon">
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+              <path d="M60 10L70 20L85 15L88 30L75 40L88 50L85 65L70 60L60 70L50 60L35 65L32 50L45 40L32 30L35 15L50 20L60 10Z" 
+                    stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+              <path d="M60 25C70 25 75 30 75 40C75 55 65 65 60 70C55 65 45 55 45 40C45 30 50 25 60 25Z" 
+                    stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <h2 class="security-title">Secure Registration</h2>
+          <p class="security-description">Join our healthcare platform with enterprise-grade security</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Registration Form -->
+    <div class="form-section">
+      <div class="form-container">
+        <div class="form-header">
+          <h2 class="form-title">Create Account</h2>
+          <p class="form-subtitle">Join Clinic Sync and start managing your appointments digitally</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+          <!-- Full Name Field -->
+          <div class="form-group">
+            <label for="fullName" class="input-label">Full Name</label>
+            <div class="input-container" [class.input-error]="fullName?.invalid && fullName?.touched">
+              <input
+                type="text"
+                id="fullName"
+                formControlName="fullName"
+                class="form-input"
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div *ngIf="fullName?.invalid && fullName?.touched" class="error-message">
+              <span *ngIf="fullName?.errors?.['required']">Full name is required</span>
+              <span *ngIf="fullName?.errors?.['minlength']">Name must be at least 2 characters</span>
+              <span *ngIf="fullName?.errors?.['maxlength']">Name cannot exceed 100 characters</span>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email" class="input-label">Email Address</label>
+            <div class="input-container" [class.input-error]="email?.invalid && email?.touched">
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-input"
+                placeholder="Enter your email address"
+              />
+            </div>
+            <div *ngIf="email?.invalid && email?.touched" class="error-message">
+              <span *ngIf="email?.errors?.['required']">Email is required</span>
+              <span *ngIf="email?.errors?.['email']">Please enter a valid email address</span>
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="input-label">Password</label>
+            <div class="input-container" [class.input-error]="password?.invalid && password?.touched">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                class="form-input"
+                placeholder="Create a secure password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('password')"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path *ngIf="!showPassword" d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z" 
+                        fill="#6b7280"/>
+                  <path *ngIf="!showPassword" d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z" 
+                        fill="#ffffff"/>
+                  <path *ngIf="showPassword" d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19" 
+                        stroke="#6b7280" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Password Strength Meter -->
+            <div *ngIf="password?.value" class="password-strength">
+              <div class="strength-meter">
+                <div class="strength-bar" [style.width.%]="getPasswordStrength()" 
+                     [class.weak]="getPasswordStrength() <= 40"
+                     [class.medium]="getPasswordStrength() > 40 && getPasswordStrength() <= 70"
+                     [class.strong]="getPasswordStrength() > 70"></div>
+              </div>
+              <div class="strength-label">
+                <span *ngIf="getPasswordStrength() <= 40">Weak</span>
+                <span *ngIf="getPasswordStrength() > 40 && getPasswordStrength() <= 70">Medium</span>
+                <span *ngIf="getPasswordStrength() > 70">Strong</span>
+              </div>
+            </div>
+
+            <!-- Password Requirements -->
+            <div *ngIf="password?.value" class="password-requirements">
+              <div class="requirement" [class.valid]="password?.value?.length >= passwordRequirements.minLength">
+                <span class="requirement-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path *ngIf="password?.value?.length >= passwordRequirements.minLength" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle *ngIf="password?.value?.length < passwordRequirements.minLength" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                  </svg>
+                </span>
+                At least {{ passwordRequirements.minLength }} characters
+              </div>
+              <div class="requirement" [class.valid]="!password?.errors?.['uppercase']">
+                <span class="requirement-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path *ngIf="!password?.errors?.['uppercase']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle *ngIf="password?.errors?.['uppercase']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                  </svg>
+                </span>
+                One uppercase letter (A-Z)
+              </div>
+              <div class="requirement" [class.valid]="!password?.errors?.['lowercase']">
+                <span class="requirement-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path *ngIf="!password?.errors?.['lowercase']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle *ngIf="password?.errors?.['lowercase']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                  </svg>
+                </span>
+                One lowercase letter (a-z)
+              </div>
+              <div class="requirement" [class.valid]="!password?.errors?.['digit']">
+                <span class="requirement-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path *ngIf="!password?.errors?.['digit']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle *ngIf="password?.errors?.['digit']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                  </svg>
+                </span>
+                One digit (0-9)
+              </div>
+              <div class="requirement" [class.valid]="!password?.errors?.['specialChar']">
+                <span class="requirement-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path *ngIf="!password?.errors?.['specialChar']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle *ngIf="password?.errors?.['specialChar']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                  </svg>
+                </span>
+                One special character
+              </div>
+            </div>
+
+            <div *ngIf="password?.invalid && password?.touched" class="error-message">
+              <span *ngFor="let error of getPasswordErrors()">{{ error }}</span>
+            </div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="form-group">
+            <label for="confirmPassword" class="input-label">Confirm Password</label>
+            <div class="input-container" [class.input-error]="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched">
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-input"
+                placeholder="Confirm your password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('confirmPassword')"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path *ngIf="!showConfirmPassword" d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z" 
+                        fill="#6b7280"/>
+                  <path *ngIf="!showConfirmPassword" d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z" 
+                        fill="#ffffff"/>
+                  <path *ngIf="showConfirmPassword" d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19" 
+                        stroke="#6b7280" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            </div>
+            <div *ngIf="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched" class="error-message">
+              <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</span>
+              <span *ngIf="registerForm.errors?.['passwordMismatch']">Passwords do not match</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="submit-button"
+            [disabled]="loading"
+            [class.loading]="loading"
+          >
+            <span *ngIf="!loading">Create Account</span>
+            <div *ngIf="loading" class="loading-spinner">
+              <div class="spinner"></div>
+              <span>Creating Account...</span>
+            </div>
+          </button>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-error">
+            <div class="alert-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" 
+                      stroke="#ef4444" stroke-width="1.5"/>
+                <path d="M10 6V10M10 14H10.01" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="alert-content">
+              <p>{{ errorMessage }}</p>
+            </div>
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage" class="alert alert-success">
+            <div class="alert-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="alert-content">
+              <p>{{ successMessage }}</p>
+            </div>
+          </div>
+        </form>
+
+        <!-- Login Link -->
+        <div class="login-link">
+          <p>Already have an account? <a routerLink="/auth/login">Sign in here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

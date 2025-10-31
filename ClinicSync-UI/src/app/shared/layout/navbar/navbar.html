@@ -1,0 +1,236 @@
+<nav
+  class="navbar"
+  [class.scrolled]="isScrolled"
+  [class.navbar-loading]="isLoading()"
+>
+  <div class="navbar-container">
+    <!-- Logo & Brand -->
+    <a class="navbar-brand" routerLink="/" (click)="closeMobileMenu()">
+      <div class="logo-icon">🏥</div>
+      <div class="logo-text">
+        <span class="brand-name">MediCare</span>
+        <span class="brand-tagline">Healthcare Platform</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation Menu -->
+    <div class="navbar-menu">
+      <ng-container *ngFor="let item of getCurrentNavItems()">
+        <div class="nav-item" *ngIf="hasAccess(item)">
+          <!-- Nav Link without Children -->
+          <a
+            *ngIf="!item.children || item.children.length === 0"
+            class="nav-link"
+            [routerLink]="item.path"
+            [class.active]="item.isActive"
+            routerLinkActive="active"
+          >
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+
+          <!-- Nav Link with Dropdown -->
+          <div *ngIf="item.children && item.children.length > 0">
+            <div class="nav-link" [class.active]="item.isActive">
+              <span class="nav-icon">{{ item.icon }}</span>
+              <span class="nav-label">{{ item.label }}</span>
+              <span class="dropdown-arrow">▼</span>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div class="dropdown-menu">
+              <a
+                *ngFor="let child of item.children"
+                class="dropdown-item"
+                [routerLink]="child.path"
+                [class.active]="child.isActive"
+                routerLinkActive="active"
+              >
+                <span class="dropdown-icon">{{ child.icon }}</span>
+                <span>{{ child.label }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Desktop User Actions -->
+    <div class="navbar-actions">
+      <!-- When User is Authenticated -->
+      <div class="user-menu-wrapper" *ngIf="isAuthenticated()">
+        <button
+          class="user-menu-btn"
+          [class.open]="isUserMenuOpen"
+          (click)="toggleUserMenu()"
+        >
+          <div class="user-avatar">
+            {{ getDisplayName().charAt(0).toUpperCase() }}
+          </div>
+
+          <div class="user-info">
+            <span class="user-name">{{ getDisplayName() }}</span>
+            <span class="user-role">{{ getDisplayRole() }}</span>
+          </div>
+
+          <span class="dropdown-arrow">▼</span>
+        </button>
+
+        <!-- User Dropdown Menu -->
+        <div class="user-menu" [class.open]="isUserMenuOpen">
+          <div class="user-menu-header">
+            <div class="user-menu-name">{{ getDisplayName() }}</div>
+            <div class="user-menu-email">{{ currentUser?.email }}</div>
+            <span
+              class="user-menu-role"
+              [class.role-patient]="isPatient()"
+              [class.role-doctor]="isDoctor()"
+              [class.role-admin]="isAdmin()"
+            >
+              {{ getDisplayRole() }}
+            </span>
+          </div>
+
+          <a class="user-menu-item" (click)="goToDashboard()">
+            <span class="menu-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+
+          <a class="user-menu-item" (click)="goToProfile()">
+            <span class="menu-icon">👤</span>
+            <span>My Profile</span>
+          </a>
+
+          <button class="user-menu-item logout" (click)="logout()">
+            <span class="menu-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- When User is Not Authenticated -->
+      <div class="auth-buttons" *ngIf="!isAuthenticated()">
+        <button class="btn-login" (click)="login()">Login</button>
+        <button class="btn-register" (click)="register()">Sign Up</button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      class="mobile-menu-btn"
+      [class.open]="isMobileMenuOpen"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle mobile menu"
+    >
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================= -->
+<!-- MOBILE MENU - FULL SCREEN -->
+<!-- ============================================= -->
+
+<div class="mobile-menu" [class.open]="isMobileMenuOpen">
+  <div class="mobile-menu-container">
+    <!-- Mobile User Info (When Authenticated) -->
+    <div class="mobile-user-info" *ngIf="isAuthenticated()">
+      <div class="mobile-user-avatar">
+        {{ getDisplayName().charAt(0).toUpperCase() }}
+      </div>
+      <div class="mobile-user-details">
+        <div class="mobile-user-name">{{ getDisplayName() }}</div>
+        <div class="mobile-user-email">{{ currentUser?.email }}</div>
+        <span
+          class="mobile-user-role"
+          [class.role-patient]="isPatient()"
+          [class.role-doctor]="isDoctor()"
+          [class.role-admin]="isAdmin()"
+        >
+          {{ getDisplayRole() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Items -->
+    <div class="mobile-nav-items">
+      <ng-container *ngFor="let item of getCurrentNavItems()">
+        <div class="mobile-nav-item" *ngIf="hasAccess(item)">
+          <!-- Nav Item without Children -->
+          <a
+            *ngIf="!item.children || item.children.length === 0"
+            class="mobile-nav-link"
+            [routerLink]="item.path"
+            [class.active]="item.isActive"
+            (click)="closeMobileMenu()"
+            routerLinkActive="active"
+          >
+            <div class="mobile-nav-content">
+              <span class="mobile-nav-icon">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </div>
+          </a>
+
+          <!-- Nav Item with Children -->
+          <div *ngIf="item.children && item.children.length > 0">
+            <div
+              class="mobile-nav-link"
+              [class.active]="item.isActive"
+              [class.expanded]="item.isExpanded"
+              (click)="toggleSubMenu(item)"
+            >
+              <div class="mobile-nav-content">
+                <span class="mobile-nav-icon">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
+              </div>
+              <span class="expand-arrow">▼</span>
+            </div>
+
+            <!-- Mobile Submenu -->
+            <div class="mobile-submenu" [class.expanded]="item.isExpanded">
+              <a
+                *ngFor="let child of item.children"
+                class="mobile-submenu-item"
+                [routerLink]="child.path"
+                [class.active]="child.isActive"
+                (click)="closeMobileMenu()"
+                routerLinkActive="active"
+              >
+                <span class="submenu-icon">{{ child.icon }}</span>
+                <span>{{ child.label }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Mobile Quick Actions (When Authenticated) -->
+    <div class="mobile-quick-actions" *ngIf="isAuthenticated()">
+      <button class="quick-action-btn btn-dashboard" (click)="goToDashboard()">
+        <span>📊</span>
+        <span>Go to Dashboard</span>
+      </button>
+
+      <button class="quick-action-btn btn-profile" (click)="goToProfile()">
+        <span>👤</span>
+        <span>View Profile</span>
+      </button>
+
+      <button class="quick-action-btn btn-logout" (click)="logout()">
+        <span>🚪</span>
+        <span>Logout</span>
+      </button>
+    </div>
+
+    <!-- Mobile Auth Buttons (When Not Authenticated) -->
+    <div class="mobile-auth-buttons" *ngIf="!isAuthenticated()">
+      <button class="mobile-btn-login" (click)="login()">Login</button>
+      <button class="mobile-btn-register" (click)="register()">Sign Up</button>
+    </div>
+  </div>
+</div>

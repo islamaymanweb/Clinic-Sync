@@ -1,0 +1,284 @@
+<!-- features/doctors/doctors.component.html -->
+<div class="doctors-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1 class="page-title">Find Your Doctor</h1>
+      <p class="page-subtitle">
+        Discover our team of specialized healthcare professionals
+      </p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="container">
+      <form [formGroup]="searchForm" class="search-form">
+        <div class="search-row">
+          <!-- Search Input -->
+          <div class="search-input-group">
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Search doctors by name..."
+              class="search-input"
+              aria-label="Search doctors by name"
+            />
+          </div>
+
+          <!-- Specialty Filter -->
+          <div class="filter-group">
+            <select
+              formControlName="specialtyId"
+              (change)="onFilterChange()"
+              class="filter-select"
+              aria-label="Filter by specialty"
+            >
+              <option value="">All Specialties</option>
+              <option
+                *ngFor="let specialty of specialties"
+                [value]="specialty.id"
+              >
+                {{ specialty.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Sort Filter -->
+          <div class="filter-group">
+            <select
+              formControlName="sortBy"
+              (change)="onFilterChange()"
+              class="filter-select"
+              aria-label="Sort by"
+            >
+              <option
+                *ngFor="let option of sortOptions"
+                [value]="option.value"
+                [attr.data-descending]="option.descending"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Search Button -->
+          <button
+            type="button"
+            (click)="onSearch()"
+            class="search-btn"
+            aria-label="Search doctors"
+          >
+            Search
+          </button>
+
+          <!-- Clear Filters -->
+          <button
+            type="button"
+            (click)="clearFilters()"
+            class="clear-btn"
+            aria-label="Clear all filters"
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section">
+    <div class="container">
+      <!-- Loading State -->
+      <div
+        *ngIf="loading"
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>Loading doctors...</p>
+      </div>
+
+      <!-- Results Content -->
+      <div *ngIf="!loading" class="results-content">
+        <!-- Results Header -->
+        <div
+          class="results-header"
+          *ngIf="totalCount > 0 || doctors.length > 0"
+        >
+          <h2 class="results-count">
+            <ng-container *ngIf="totalCount > 0">
+              {{ totalCount }} Doctor<ng-container *ngIf="totalCount !== 1"
+                >s</ng-container
+              >
+              Found
+            </ng-container>
+          </h2>
+          <div *ngIf="totalCount > 0" class="results-meta">
+            Showing {{ doctors.length }} of {{ totalCount }}
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div
+          *ngIf="totalCount === 0 && !loading"
+          class="no-results"
+          role="alert"
+        >
+          <div class="no-results-icon" aria-hidden="true">🔍</div>
+          <h3>No doctors found</h3>
+          <p>
+            Try adjusting your search criteria or clear filters to see all
+            doctors.
+          </p>
+          <button
+            (click)="clearFilters()"
+            class="btn-primary"
+            aria-label="Show all doctors"
+          >
+            Show All Doctors
+          </button>
+        </div>
+
+        <!-- Doctors Grid -->
+        <div *ngIf="totalCount > 0" class="doctors-grid">
+          <article *ngFor="let doctor of doctors" class="doctor-card">
+            <!-- Doctor Image -->
+            <div class="doctor-image">
+              <img
+                [src]="doctor.profilePictureUrl || 'assets/images/doctor-placeholder.jpg'"
+                [alt]="'Photo of ' + doctor.fullName"
+                class="doctor-img"
+                loading="lazy"
+                (error)="doctor.profilePictureUrl = 'assets/images/doctor-placeholder.jpg'"
+              />
+              <div
+                class="availability-badge"
+                [class.available]="doctor.isAvailable"
+                [attr.aria-label]="doctor.isAvailable ? 'Available now' : 'Currently busy'"
+              >
+                {{ doctor.isAvailable ? 'Available' : 'Busy' }}
+              </div>
+            </div>
+
+            <!-- Doctor Info -->
+            <div class="doctor-info">
+              <h3 class="doctor-name">{{ doctor.fullName }}</h3>
+              <p class="doctor-specialty">{{ doctor.specialty }}</p>
+
+              <!-- Rating -->
+              <div
+                class="doctor-rating"
+                *ngIf="doctor.averageRating && doctor.averageRating > 0"
+              >
+                <div
+                  class="stars"
+                  role="img"
+                  [attr.aria-label]="'Rating: ' + doctor.averageRating + ' out of 5 stars'"
+                >
+                  <span
+                    *ngFor="let star of [1,2,3,4,5]"
+                    [class.filled]="star <= doctor.averageRating!"
+                    [class.half]="star > doctor.averageRating! && star - 0.5 <= doctor.averageRating!"
+                    aria-hidden="true"
+                  >
+                    ★
+                  </span>
+                </div>
+                <span class="rating-text">
+                  {{ doctor.averageRating!.toFixed(1) }}/5.0
+                  <ng-container
+                    *ngIf="doctor.totalReviews && doctor.totalReviews > 0"
+                  >
+                    ({{ doctor.totalReviews }} review<ng-container
+                      *ngIf="doctor.totalReviews !== 1"
+                      >s</ng-container
+                    >)
+                  </ng-container>
+                </span>
+              </div>
+
+              <!-- Experience & Fee -->
+              <div class="doctor-details">
+                <div class="detail">
+                  <span class="icon" aria-hidden="true">🎓</span>
+                  <span
+                    >{{ getYearsOfExperienceText(doctor.yearsOfExperience) }}
+                    experience</span
+                  >
+                </div>
+                <div class="detail">
+                  <span class="icon" aria-hidden="true">💵</span>
+                  <span>Consultation: ${{ doctor.consultationFee }}</span>
+                </div>
+              </div>
+
+              <!-- Bio -->
+              <p
+                *ngIf="doctor.bio && doctor.bio.trim().length > 0"
+                class="doctor-bio"
+              >
+                {{ (doctor.bio.length > 120 ? doctor.bio.substring(0, 120) +
+                '...' : doctor.bio) }}
+              </p>
+            </div>
+
+            <!-- Action Button -->
+            <div class="doctor-actions">
+              <button
+                (click)="onDoctorSelect(doctor)"
+                class="book-btn"
+                [class.disabled]="!doctor.isAvailable"
+                [disabled]="!doctor.isAvailable"
+                [attr.aria-label]="doctor.isAvailable ? 'Book appointment with ' + doctor.fullName : doctor.fullName + ' is not available'"
+              >
+                {{ doctor.isAvailable ? 'Book Appointment' : 'Not Available' }}
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Pagination -->
+        <nav
+          *ngIf="totalPages > 1"
+          class="pagination"
+          role="navigation"
+          aria-label="Pagination navigation"
+        >
+          <button
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="!hasPreviousPage"
+            class="pagination-btn prev"
+            aria-label="Go to previous page"
+          >
+            ‹ Previous
+          </button>
+
+          <div class="pagination-numbers" role="list">
+            <button
+              *ngFor="let page of getPageNumbers()"
+              (click)="onPageChange(page)"
+              [class.active]="currentPage === page"
+              class="page-number"
+              role="listitem"
+              [attr.aria-label]="'Go to page ' + page"
+              [attr.aria-current]="currentPage === page ? 'page' : null"
+            >
+              {{ page }}
+            </button>
+          </div>
+
+          <button
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="!hasNextPage"
+            class="pagination-btn next"
+            aria-label="Go to next page"
+          >
+            Next ›
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,461 @@
+<!-- Loading State -->
+@if (isLoading()) {
+  <div class="loading-container" role="status" aria-live="polite" aria-label="Loading dashboard">
+    <div class="skeleton-loader">
+      <!-- Hero Skeleton -->
+      <div class="skeleton-hero">
+        <div class="skeleton-text skeleton-title"></div>
+        <div class="skeleton-text skeleton-subtitle"></div>
+        <div class="skeleton-actions">
+          <div class="skeleton-button"></div>
+          <div class="skeleton-button"></div>
+        </div>
+      </div>
+      
+      <!-- Stats Skeleton -->
+      <div class="skeleton-stats">
+        <div class="skeleton-stat-card"></div>
+        <div class="skeleton-stat-card"></div>
+        <div class="skeleton-stat-card"></div>
+        <div class="skeleton-stat-card"></div>
+      </div>
+      
+      <!-- Content Skeleton -->
+      <div class="skeleton-content">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@if (error() && !isLoading()) {
+  <div class="error-container" role="alert" aria-live="assertive">
+    <div class="error-content">
+      <div class="error-icon">⚠️</div>
+      <h2 class="error-title">Something went wrong</h2>
+      <p class="error-message">{{ error() }}</p>
+      <button 
+        class="btn btn-primary"
+        (click)="onRetry()"
+        aria-label="Retry loading dashboard">
+        Try Again
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Main Content -->
+@if (!isLoading() && !error()) {
+  <div class="home-container">
+    
+    <!-- System Alerts -->
+    @if (systemAlerts().length > 0) {
+      <div class="alerts-container" role="alert" aria-live="polite">
+        @for (alert of systemAlerts(); track trackByAlert($index, alert)) {
+          <div class="alert alert-{{ alert.type }}">
+            <span class="alert-icon" aria-hidden="true">{{ getAlertIcon(alert.type) }}</span>
+            <span class="alert-message">{{ alert.message }}</span>
+            <button 
+              class="alert-close"
+              (click)="onDismissAlert(alert.id)"
+              aria-label="Dismiss alert">
+              ×
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Hero Section -->
+    <section class="hero-section" aria-labelledby="hero-heading">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 id="hero-heading" class="hero-title">{{ greeting() }}</h1>
+          
+          @if (isAnonymous()) {
+            <p class="hero-subtitle">
+              Your health, our priority. Experience seamless healthcare management with Clinic Sync.
+            </p>
+          } @else if (isPatient()) {
+            <p class="hero-subtitle">
+              Manage your health journey with ease. Your next appointment is just a click away.
+            </p>
+          } @else if (isDoctor()) {
+            <p class="hero-subtitle">
+              Welcome back! You have {{ quickStats()?.todayAppointments || 0 }} appointments scheduled for today.
+            </p>
+          } @else if (isAdmin()) {
+            <p class="hero-subtitle">
+              System overview: {{ quickStats()?.availableDoctors || 0 }} doctors available, 
+              {{ quickStats()?.todayAppointments || 0 }} appointments today.
+            </p>
+          }
+          
+          <div class="hero-actions">
+            @if (isAnonymous()) {
+              <button 
+                class="btn btn-primary"
+                (click)="onBookAppointment()"
+                aria-label="Book your first appointment">
+                Book Appointment
+              </button>
+              <button 
+                class="btn btn-secondary"
+                (click)="onSearchDoctors()"
+                aria-label="Browse available doctors">
+                Find Doctors
+              </button>
+            } @else if (isPatient()) {
+              <button 
+                class="btn btn-primary"
+                (click)="onBookAppointment()"
+                aria-label="Book a new appointment">
+                Book Appointment
+              </button>
+              <button 
+                class="btn btn-secondary"
+                (click)="onViewMedicalHistory()"
+                aria-label="View your medical history">
+                Medical History
+              </button>
+            } @else if (isDoctor()) {
+              <button 
+                class="btn btn-primary"
+                (click)="onViewSchedule()"
+                aria-label="View your schedule">
+                View Schedule
+              </button>
+              <button 
+                class="btn btn-secondary"
+                (click)="onViewStats()"
+                aria-label="View patient statistics">
+                Patient Queue
+              </button>
+            } @else if (isAdmin()) {
+              <button 
+                class="btn btn-primary"
+                (click)="onViewStats()"
+                aria-label="View clinic statistics">
+                View Analytics
+              </button>
+              <button 
+                class="btn btn-secondary"
+                (click)="onViewSchedule()"
+                aria-label="Manage clinic schedule">
+                Manage Schedule
+              </button>
+            }
+          </div>
+        </div>
+        
+        <div class="hero-illustration" aria-hidden="true">
+          <div class="illustration-circle"></div>
+          <div class="illustration-element illustration-element-1"></div>
+          <div class="illustration-element illustration-element-2"></div>
+          <div class="illustration-element illustration-element-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Stats -->
+    @if (quickStats() && !isAnonymous()) {
+      <section class="stats-section" aria-labelledby="stats-heading">
+        <h2 id="stats-heading" class="sr-only">Quick Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-primary" aria-hidden="true">📅</div>
+            <div class="stat-content">
+              <div class="stat-value">{{ quickStats()!.totalAppointments }}</div>
+              <div class="stat-label">Total Appointments</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-secondary" aria-hidden="true">👨‍⚕️</div>
+            <div class="stat-content">
+              <div class="stat-value">{{ quickStats()!.availableDoctors }}</div>
+              <div class="stat-label">Available Doctors</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-accent" aria-hidden="true">📋</div>
+            <div class="stat-content">
+              <div class="stat-value">{{ quickStats()!.todayAppointments }}</div>
+              <div class="stat-label">Today's Appointments</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-success" aria-hidden="true">⭐</div>
+            <div class="stat-content">
+              <div class="stat-value">{{ quickStats()!.patientSatisfaction }}</div>
+              <div class="stat-label">Patient Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      
+      <!-- Left Column -->
+      <div class="dashboard-column">
+        
+        <!-- Upcoming Appointments (Patient View) -->
+        @if (isPatient() && upcomingAppointments().length > 0) {
+          <section class="card appointments-card" aria-labelledby="appointments-heading">
+            <div class="card-header">
+              <h2 id="appointments-heading" class="card-title">Upcoming Appointments</h2>
+              <a href="#" class="card-link" aria-label="View all appointments">View All</a>
+            </div>
+            <div class="card-content">
+              <div class="appointments-list">
+                @for (appointment of upcomingAppointments(); track trackByAppointment($index, appointment)) {
+                  <div class="appointment-item">
+                    <div class="appointment-avatar" aria-hidden="true">
+                      <div class="avatar-placeholder">👨‍⚕️</div>
+                    </div>
+                    <div class="appointment-details">
+                      <h3 class="appointment-doctor">{{ appointment.doctorName }}</h3>
+                      <p class="appointment-specialty">{{ appointment.specialty }}</p>
+                      <p class="appointment-time">
+                        <span aria-label="Date">📅 {{ formatDate(appointment.date) }}</span>
+                        <span aria-label="Time">🕒 {{ appointment.time }}</span>
+                      </p>
+                    </div>
+                    <div class="appointment-status">
+                      <span 
+                        class="status-badge {{ getStatusClass(appointment.status) }}"
+                        [attr.aria-label]="'Status: ' + appointment.status">
+                        {{ appointment.status }}
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Today's Schedule (Doctor View) -->
+        @if (isDoctor()) {
+          <section class="card schedule-card" aria-labelledby="schedule-heading">
+            <div class="card-header">
+              <h2 id="schedule-heading" class="card-title">Today's Schedule</h2>
+              <a href="#" class="card-link" aria-label="View full schedule">Full Schedule</a>
+            </div>
+            <div class="card-content">
+              <div class="schedule-summary">
+                <div class="schedule-stat">
+                  <span class="schedule-number">{{ quickStats()?.todayAppointments || 0 }}</span>
+                  <span class="schedule-label">Appointments</span>
+                </div>
+                <div class="schedule-stat">
+                  <span class="schedule-number">2</span>
+                  <span class="schedule-label">Emergency Cases</span>
+                </div>
+                <div class="schedule-stat">
+                  <span class="schedule-number">45</span>
+                  <span class="schedule-label">Minutes Free</span>
+                </div>
+              </div>
+              <button 
+                class="btn btn-primary btn-block"
+                (click)="onViewSchedule()"
+                aria-label="View detailed schedule">
+                View Detailed Schedule
+              </button>
+            </div>
+          </section>
+        }
+
+        <!-- Clinic Performance (Admin View) -->
+        @if (isAdmin()) {
+          <section class="card performance-card" aria-labelledby="performance-heading">
+            <div class="card-header">
+              <h2 id="performance-heading" class="card-title">Clinic Performance</h2>
+              <a href="#" class="card-link" aria-label="View detailed analytics">Details</a>
+            </div>
+            <div class="card-content">
+              <div class="performance-metrics">
+                <div class="metric-row">
+                  <span class="metric-label">Appointment Rate</span>
+                  <span class="metric-value metric-success">+12%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Patient Satisfaction</span>
+                  <span class="metric-value metric-success">4.8/5.0</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Average Wait Time</span>
+                  <span class="metric-value">15 mins</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Staff Utilization</span>
+                  <span class="metric-value metric-warning">78%</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Announcements -->
+        @if (announcements().length > 0) {
+          <section class="card announcements-card" aria-labelledby="announcements-heading">
+            <div class="card-header">
+              <h2 id="announcements-heading" class="card-title">Announcements</h2>
+            </div>
+            <div class="card-content">
+              <div class="announcements-list">
+                @for (announcement of announcements(); track trackByAnnouncement($index, announcement)) {
+                  <div class="announcement-item">
+                    <div class="announcement-priority" 
+                         [class.priority-high]="announcement.priority === 'high'"
+                         [class.priority-medium]="announcement.priority === 'medium'"
+                         aria-label="Priority: {{ announcement.priority }}">
+                    </div>
+                    <div class="announcement-content">
+                      <h3 class="announcement-title">{{ announcement.title }}</h3>
+                      <p class="announcement-text">{{ announcement.content }}</p>
+                      <span class="announcement-date">{{ formatDate(announcement.date) }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        }
+      </div>
+
+      <!-- Right Column -->
+      <div class="dashboard-column">
+        
+        <!-- Featured Doctors -->
+        <section class="card doctors-card" aria-labelledby="doctors-heading">
+          <div class="card-header">
+            <h2 id="doctors-heading" class="card-title">Featured Doctors</h2>
+            <a href="#" class="card-link" aria-label="View all doctors">View All</a>
+          </div>
+          <div class="card-content">
+            <div class="doctors-grid">
+              @for (doctor of featuredDoctors(); track trackByDoctor($index, doctor)) {
+                <div class="doctor-card">
+                  <div class="doctor-avatar" aria-hidden="true">
+                    <div class="avatar-placeholder">👨‍⚕️</div>
+                    @if (doctor.available) {
+                      <span class="availability-indicator" aria-label="Available"></span>
+                    }
+                  </div>
+                  <div class="doctor-info">
+                    <h3 class="doctor-name">{{ doctor.name }}</h3>
+                    <p class="doctor-specialty">{{ doctor.specialty }}</p>
+                    <div class="doctor-meta">
+                      <span class="doctor-rating" aria-label="Rating: {{ doctor.rating }} out of 5">
+                        {{ getRatingStars(doctor.rating) }} {{ doctor.rating }}
+                      </span>
+                      <span class="doctor-experience" aria-label="{{ doctor.experience }} years of experience">
+                        {{ doctor.experience }}y exp.
+                      </span>
+                    </div>
+                    <button 
+                      class="btn btn-sm btn-outline"
+                      [disabled]="!doctor.available"
+                      [attr.aria-label]="'Book appointment with ' + doctor.name">
+                      {{ doctor.available ? 'Book Now' : 'Unavailable' }}
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="card quick-actions-card" aria-labelledby="quick-actions-heading">
+          <div class="card-header">
+            <h2 id="quick-actions-heading" class="card-title">Quick Actions</h2>
+          </div>
+          <div class="card-content">
+            <div class="quick-actions-grid">
+              <button class="quick-action-btn" aria-label="Book an appointment">
+                <span class="quick-action-icon">📅</span>
+                <span class="quick-action-label">Book Appointment</span>
+              </button>
+              <button class="quick-action-btn" aria-label="Find doctors">
+                <span class="quick-action-icon">🔍</span>
+                <span class="quick-action-label">Find Doctors</span>
+              </button>
+              <button class="quick-action-btn" aria-label="View prescriptions">
+                <span class="quick-action-icon">💊</span>
+                <span class="quick-action-label">Prescriptions</span>
+              </button>
+              <button class="quick-action-btn" aria-label="View medical records">
+                <span class="quick-action-icon">📋</span>
+                <span class="quick-action-label">Medical Records</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Showcase -->
+        <section class="card features-card" aria-labelledby="features-heading">
+          <div class="card-header">
+            <h2 id="features-heading" class="card-title">Why Choose Clinic Sync?</h2>
+          </div>
+          <div class="card-content">
+            <div class="features-list">
+              <div class="feature-item">
+                <div class="feature-icon" aria-hidden="true">🔒</div>
+                <div class="feature-content">
+                  <h3 class="feature-title">Secure & Private</h3>
+                  <p class="feature-description">Your health data is encrypted and protected</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon" aria-hidden="true">⚡</div>
+                <div class="feature-content">
+                  <h3 class="feature-title">Fast & Easy</h3>
+                  <p class="feature-description">Book appointments in seconds</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon" aria-hidden="true">📱</div>
+                <div class="feature-content">
+                  <h3 class="feature-title">Mobile Ready</h3>
+                  <p class="feature-description">Access from anywhere, anytime</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Call to Action Section -->
+    @if (isAnonymous()) {
+      <section class="cta-section" aria-labelledby="cta-heading">
+        <div class="cta-content">
+          <h2 id="cta-heading" class="cta-title">Ready to take control of your health?</h2>
+          <p class="cta-subtitle">Join thousands of patients who trust Clinic Sync for their healthcare needs</p>
+          <div class="cta-actions">
+            <button 
+              class="btn btn-primary btn-lg"
+              (click)="onBookAppointment()"
+              aria-label="Get started with Clinic Sync">
+              Get Started
+            </button>
+            <button 
+              class="btn btn-secondary btn-lg"
+              aria-label="Learn more about our services">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+}

@@ -1,0 +1,924 @@
+ 
+@use '../../../../styles/variables' as *;
+
+ 
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-index-sticky;
+  background-color: $color-white;
+  border-bottom: $border-width-1 solid $color-gray-200;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.scrolled {
+    box-shadow: $shadow-md;
+    border-bottom-color: transparent;
+  }
+
+  // Navbar Inner Container
+  .navbar-container {
+    max-width: $container-2xl;
+    margin: 0 auto;
+    padding: 0 $spacing-6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: $header-height;
+    gap: $spacing-8;
+
+    @media (max-width: $breakpoint-md) {
+      padding: 0 $spacing-4;
+      gap: $spacing-4;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      padding: 0 $spacing-3;
+      height: 3.5rem;
+    }
+  }
+}
+
+// =============================================
+// LOGO & BRAND
+// =============================================
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  .logo-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, $brand-primary 0%, $brand-secondary 100%);
+    border-radius: $border-radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-xl;
+    box-shadow: $shadow-sm;
+
+    @media (max-width: $breakpoint-sm) {
+      width: 2rem;
+      height: 2rem;
+      font-size: $font-size-lg;
+    }
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    @media (max-width: $breakpoint-sm) {
+      display: none;
+    }
+
+    .brand-name {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: $color-gray-900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tagline {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      color: $brand-secondary;
+      line-height: 1;
+    }
+  }
+}
+
+// =============================================
+// NAVIGATION MENU - DESKTOP
+// =============================================
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  flex: 1;
+
+  @media (max-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
+.nav-item {
+  position: relative;
+
+  &:hover > .nav-link {
+    color: $brand-primary;
+    background-color: $brand-primary-50;
+  }
+
+  &:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+  text-decoration: none;
+  border-radius: $border-radius-lg;
+  transition: $transition-fast;
+  cursor: pointer;
+  white-space: nowrap;
+
+  .nav-icon {
+    font-size: $font-size-lg;
+    line-height: 1;
+  }
+
+  .nav-label {
+    line-height: 1;
+  }
+
+  .dropdown-arrow {
+    font-size: $font-size-xs;
+    transition: transform 0.2s ease;
+  }
+
+  &.active {
+    color: $brand-primary;
+    background-color: $brand-primary-50;
+    font-weight: $font-weight-semibold;
+  }
+
+  &:hover {
+    .dropdown-arrow {
+      transform: translateY(2px);
+    }
+  }
+}
+
+// =============================================
+// DROPDOWN MENU
+// =============================================
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: $spacing-2;
+  min-width: 240px;
+  background-color: $color-white;
+  border: $border-width-1 solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-xl;
+  padding: $spacing-2;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  z-index: $z-index-dropdown;
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-gray-700;
+    text-decoration: none;
+    border-radius: $border-radius-md;
+    transition: $transition-fast;
+    cursor: pointer;
+
+    .dropdown-icon {
+      font-size: $font-size-lg;
+    }
+
+    &:hover {
+      background-color: $brand-primary-50;
+      color: $brand-primary;
+    }
+
+    &.active {
+      background-color: $brand-primary-50;
+      color: $brand-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+// =============================================
+// USER ACTIONS - DESKTOP
+// =============================================
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+
+  @media (max-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
+.user-menu-wrapper {
+  position: relative;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-2 $spacing-3;
+  background-color: $color-white;
+  border: $border-width-1 solid $color-gray-300;
+  border-radius: $border-radius-full;
+  cursor: pointer;
+  transition: $transition-fast;
+
+  &:hover {
+    border-color: $brand-primary;
+    background-color: $brand-primary-50;
+  }
+
+  .user-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: $border-radius-full;
+    background: linear-gradient(135deg, $brand-primary 0%, $brand-secondary 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+    flex-shrink: 0;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+
+    .user-name {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-900;
+      line-height: 1;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-role {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      color: $color-gray-500;
+      line-height: 1;
+    }
+  }
+
+  .dropdown-arrow {
+    font-size: $font-size-xs;
+    color: $color-gray-500;
+    transition: transform 0.2s ease;
+  }
+
+  &.open .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+}
+
+.user-menu {
+  position: absolute;
+  top: calc(100% + #{$spacing-2});
+  right: 0;
+  min-width: 280px;
+  background-color: $color-white;
+  border: $border-width-1 solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-xl;
+  padding: $spacing-3;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  z-index: $z-index-dropdown;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .user-menu-header {
+    padding: $spacing-3 $spacing-4;
+    border-bottom: $border-width-1 solid $color-gray-200;
+    margin-bottom: $spacing-2;
+
+    .user-menu-name {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-900;
+      margin-bottom: $spacing-1;
+    }
+
+    .user-menu-email {
+      font-size: $font-size-sm;
+      color: $color-gray-500;
+      word-break: break-all;
+    }
+
+    .user-menu-role {
+      display: inline-block;
+      margin-top: $spacing-2;
+      padding: $spacing-1 $spacing-3;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      border-radius: $border-radius-full;
+
+      &.role-patient {
+        background-color: $brand-primary-50;
+        color: $brand-primary;
+      }
+
+      &.role-doctor {
+        background-color: $brand-secondary-50;
+        color: $brand-secondary;
+      }
+
+      &.role-admin {
+        background-color: $brand-accent-50;
+        color: $brand-accent;
+      }
+    }
+  }
+
+  .user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-gray-700;
+    text-decoration: none;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    transition: $transition-fast;
+
+    .menu-icon {
+      font-size: $font-size-lg;
+    }
+
+    &:hover {
+      background-color: $color-gray-50;
+      color: $brand-primary;
+    }
+
+    &.logout {
+      color: $color-error;
+      margin-top: $spacing-2;
+      border-top: $border-width-1 solid $color-gray-200;
+      padding-top: $spacing-4;
+
+      &:hover {
+        background-color: $color-error-light;
+      }
+    }
+  }
+}
+
+// Auth Buttons (when not logged in)
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+
+  .btn-login,
+  .btn-register {
+    padding: $spacing-2 $spacing-5;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    transition: $transition-fast;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-login {
+    background-color: transparent;
+    color: $brand-primary;
+    border: $border-width-2 solid $brand-primary;
+
+    &:hover {
+      background-color: $brand-primary-50;
+    }
+  }
+
+  .btn-register {
+    background-color: $brand-primary;
+    color: $color-white;
+
+    &:hover {
+      background-color: $brand-primary-dark;
+    }
+  }
+}
+
+// =============================================
+// MOBILE MENU BUTTON
+// =============================================
+
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: transparent;
+  border: $border-width-1 solid $color-gray-300;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: $transition-fast;
+
+  @media (max-width: $breakpoint-lg) {
+    display: flex;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &:hover {
+    background-color: $brand-primary-50;
+    border-color: $brand-primary;
+  }
+
+  .hamburger {
+    width: 1.25rem;
+    height: 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (max-width: $breakpoint-sm) {
+      width: 1rem;
+      height: 0.875rem;
+    }
+
+    span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: $color-gray-700;
+      border-radius: $border-radius-full;
+      transition: $transition-fast;
+    }
+  }
+
+  &.open {
+    background-color: $brand-primary;
+    border-color: $brand-primary;
+
+    .hamburger span {
+      background-color: $color-white;
+
+      &:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+
+        @media (max-width: $breakpoint-sm) {
+          transform: translateY(6px) rotate(45deg);
+        }
+      }
+
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+
+        @media (max-width: $breakpoint-sm) {
+          transform: translateY(-6px) rotate(-45deg);
+        }
+      }
+    }
+  }
+}
+
+// =============================================
+// MOBILE MENU - FULL SCREEN
+// =============================================
+
+.mobile-menu {
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $color-white;
+  z-index: $z-index-fixed;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: $breakpoint-sm) {
+    top: 3.5rem;
+  }
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  .mobile-menu-container {
+    padding: $spacing-6 $spacing-4;
+    max-width: 100%;
+
+    @media (max-width: $breakpoint-sm) {
+      padding: $spacing-4 $spacing-3;
+    }
+  }
+
+  // Mobile User Info (when logged in)
+  .mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    padding: $spacing-4;
+    background: linear-gradient(135deg, $brand-primary-50 0%, $brand-secondary-50 100%);
+    border-radius: $border-radius-xl;
+    margin-bottom: $spacing-6;
+
+    @media (max-width: $breakpoint-sm) {
+      padding: $spacing-3;
+      margin-bottom: $spacing-4;
+    }
+
+    .mobile-user-avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: $border-radius-full;
+      background: linear-gradient(135deg, $brand-primary 0%, $brand-secondary 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $color-white;
+      flex-shrink: 0;
+
+      @media (max-width: $breakpoint-sm) {
+        width: 3rem;
+        height: 3rem;
+        font-size: $font-size-lg;
+      }
+    }
+
+    .mobile-user-details {
+      flex: 1;
+      min-width: 0;
+
+      .mobile-user-name {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-gray-900;
+        margin-bottom: $spacing-1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media (max-width: $breakpoint-sm) {
+          font-size: $font-size-base;
+        }
+      }
+
+      .mobile-user-email {
+        font-size: $font-size-sm;
+        color: $color-gray-600;
+        margin-bottom: $spacing-2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media (max-width: $breakpoint-sm) {
+          font-size: $font-size-xs;
+        }
+      }
+
+      .mobile-user-role {
+        display: inline-block;
+        padding: $spacing-1 $spacing-3;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-semibold;
+        border-radius: $border-radius-full;
+
+        &.role-patient {
+          background-color: $color-white;
+          color: $brand-primary;
+        }
+
+        &.role-doctor {
+          background-color: $color-white;
+          color: $brand-secondary;
+        }
+
+        &.role-admin {
+          background-color: $color-white;
+          color: $brand-accent;
+        }
+      }
+    }
+  }
+
+  // Mobile Navigation Items
+  .mobile-nav-item {
+    margin-bottom: $spacing-2;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $color-gray-700;
+    text-decoration: none;
+    border-radius: $border-radius-lg;
+    transition: $transition-fast;
+    cursor: pointer;
+
+    @media (max-width: $breakpoint-sm) {
+      padding: $spacing-3;
+      font-size: $font-size-sm;
+    }
+
+    .mobile-nav-content {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+
+      .mobile-nav-icon {
+        font-size: $font-size-2xl;
+        line-height: 1;
+
+        @media (max-width: $breakpoint-sm) {
+          font-size: $font-size-xl;
+        }
+      }
+    }
+
+    .expand-arrow {
+      font-size: $font-size-sm;
+      color: $color-gray-400;
+      transition: transform 0.2s ease;
+    }
+
+    &.active {
+      background-color: $brand-primary-50;
+      color: $brand-primary;
+      font-weight: $font-weight-semibold;
+    }
+
+    &:hover {
+      background-color: $color-gray-50;
+    }
+
+    &.expanded .expand-arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Mobile Submenu
+  .mobile-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding-left: $spacing-8;
+
+    @media (max-width: $breakpoint-sm) {
+      padding-left: $spacing-6;
+    }
+
+    &.expanded {
+      max-height: 500px;
+    }
+
+    .mobile-submenu-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      padding: $spacing-3 $spacing-4;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-gray-600;
+      text-decoration: none;
+      border-radius: $border-radius-md;
+      transition: $transition-fast;
+      cursor: pointer;
+      margin-top: $spacing-2;
+
+      @media (max-width: $breakpoint-sm) {
+        padding: $spacing-2 $spacing-3;
+        font-size: $font-size-xs;
+      }
+
+      .submenu-icon {
+        font-size: $font-size-lg;
+
+        @media (max-width: $breakpoint-sm) {
+          font-size: $font-size-base;
+        }
+      }
+
+      &:hover {
+        background-color: $color-gray-50;
+        color: $brand-primary;
+      }
+
+      &.active {
+        background-color: $brand-primary-50;
+        color: $brand-primary;
+        font-weight: $font-weight-semibold;
+      }
+    }
+  }
+
+  // Mobile Quick Actions
+  .mobile-quick-actions {
+    margin-top: $spacing-6;
+    padding-top: $spacing-6;
+    border-top: $border-width-1 solid $color-gray-200;
+
+    @media (max-width: $breakpoint-sm) {
+      margin-top: $spacing-4;
+      padding-top: $spacing-4;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      width: 100%;
+      padding: $spacing-4;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      border-radius: $border-radius-lg;
+      cursor: pointer;
+      transition: $transition-fast;
+      margin-bottom: $spacing-3;
+      border: none;
+      text-decoration: none;
+      text-align: left;
+
+      @media (max-width: $breakpoint-sm) {
+        padding: $spacing-3;
+        font-size: $font-size-sm;
+      }
+
+      &.btn-profile {
+        background-color: $brand-primary-50;
+        color: $brand-primary;
+
+        &:hover {
+          background-color: $brand-primary;
+          color: $color-white;
+        }
+      }
+
+      &.btn-dashboard {
+        background-color: $brand-secondary-50;
+        color: $brand-secondary;
+
+        &:hover {
+          background-color: $brand-secondary;
+          color: $color-white;
+        }
+      }
+
+      &.btn-logout {
+        background-color: $color-error-light;
+        color: $color-error;
+
+        &:hover {
+          background-color: $color-error;
+          color: $color-white;
+        }
+      }
+    }
+  }
+
+  // Mobile Auth Buttons (when not logged in)
+  .mobile-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    padding-top: $spacing-6;
+
+    @media (max-width: $breakpoint-sm) {
+      padding-top: $spacing-4;
+    }
+
+    .mobile-btn-login,
+    .mobile-btn-register {
+      width: 100%;
+      padding: $spacing-4;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      border-radius: $border-radius-lg;
+      cursor: pointer;
+      transition: $transition-fast;
+      border: none;
+      text-decoration: none;
+      text-align: center;
+
+      @media (max-width: $breakpoint-sm) {
+        padding: $spacing-3;
+        font-size: $font-size-sm;
+      }
+    }
+
+    .mobile-btn-login {
+      background-color: transparent;
+      color: $brand-primary;
+      border: $border-width-2 solid $brand-primary;
+
+      &:hover {
+        background-color: $brand-primary-50;
+      }
+    }
+
+    .mobile-btn-register {
+      background-color: $brand-primary;
+      color: $color-white;
+
+      &:hover {
+        background-color: $brand-primary-dark;
+      }
+    }
+  }
+}
+
+// =============================================
+// LOADING STATE
+// =============================================
+
+.navbar-loading {
+  .user-menu-btn,
+  .mobile-user-info {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// =============================================
+// ACCESSIBILITY
+// =============================================
+
+.nav-link,
+.dropdown-item,
+.user-menu-item,
+.mobile-nav-link,
+.mobile-submenu-item,
+.quick-action-btn {
+  &:focus-visible {
+    outline: 2px solid $brand-primary;
+    outline-offset: 2px;
+  }
+}
+
+// =============================================
+// PRINT STYLES
+// =============================================
+
+@media print {
+  .navbar {
+    display: none;
+  }
+}

@@ -1,0 +1,374 @@
+
+// Primary Brand Colors - Professional Medical Theme
+$brand-primary: #2563eb !default;      // Trustworthy Blue
+$brand-primary-dark: #1d4ed8 !default;
+$brand-primary-light: #3b82f6 !default;
+$brand-primary-50: #eff6ff !default;
+
+$brand-secondary: #059669 !default;    // Healing Green
+$brand-secondary-dark: #047857 !default;
+$brand-secondary-light: #10b981 !default;
+$brand-secondary-50: #ecfdf5 !default;
+
+$brand-accent: #7c3aed !default;       // Professional Purple
+$brand-accent-dark: #6d28d9 !default;
+$brand-accent-light: #8b5cf6 !default;
+$brand-accent-50: #faf5ff !default;
+
+// =============================================
+// 2. NEUTRAL COLOR SCALE
+// =============================================
+
+// Gray Scale - Enterprise Level
+$color-white: #ffffff !default;
+$color-black: #000000 !default;
+
+$color-gray-50: #f9fafb !default;
+$color-gray-100: #f3f4f6 !default;
+$color-gray-200: #e5e7eb !default;
+$color-gray-300: #d1d5db !default;
+$color-gray-400: #9ca3af !default;
+$color-gray-500: #6b7280 !default;
+$color-gray-600: #4b5563 !default;
+$color-gray-700: #374151 !default;
+$color-gray-800: #1f2937 !default;
+$color-gray-900: #111827 !default;
+
+// =============================================
+// 3. SEMANTIC COLORS
+// =============================================
+
+// Status Colors
+$color-success: #10b981 !default;
+$color-success-light: #d1fae5 !default;
+$color-success-dark: #047857 !default;
+
+$color-warning: #f59e0b !default;
+$color-warning-light: #fef3c7 !default;
+$color-warning-dark: #d97706 !default;
+
+$color-error: #ef4444 !default;
+$color-error-light: #fee2e2 !default;
+$color-error-dark: #dc2626 !default;
+
+$color-info: #3b82f6 !default;
+$color-info-light: #dbeafe !default;
+$color-info-dark: #1d4ed8 !default;
+
+// Medical Specific Status
+$color-available: #10b981 !default;
+$color-booked: #ef4444 !default;
+$color-pending: #f59e0b !default;
+$color-completed: #8b5cf6 !default;
+$color-emergency: #dc2626 !default;
+
+// =============================================
+// 4. TYPOGRAPHY SYSTEM
+// =============================================
+
+// Font Families - Enterprise Level
+$font-family-primary: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !default;
+$font-family-arabic: 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif !default;
+$font-family-monospace: 'SF Mono', 'Roboto Mono', Consolas, 'Liberation Mono', Menlo, monospace !default;
+
+// Font Weights
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+$font-weight-extrabold: 800 !default;
+
+// Font Sizes - Scalable System
+$font-size-xs: 0.75rem !default;    // 12px
+$font-size-sm: 0.875rem !default;   // 14px
+$font-size-base: 1rem !default;     // 16px
+$font-size-lg: 1.125rem !default;   // 18px
+$font-size-xl: 1.25rem !default;    // 20px
+$font-size-2xl: 1.5rem !default;    // 24px
+$font-size-3xl: 1.875rem !default;  // 30px
+$font-size-4xl: 2.25rem !default;   // 36px
+$font-size-5xl: 3rem !default;      // 48px
+$font-size-6xl: 3.75rem !default;   // 60px
+
+// Line Heights
+$line-height-tight: 1.25 !default;
+$line-height-normal: 1.5 !default;
+$line-height-relaxed: 1.75 !default;
+
+// =============================================
+// 5. SPACING & LAYOUT
+// =============================================
+
+// Spacing Scale
+$spacing-0: 0 !default;
+$spacing-1: 0.25rem !default;    // 4px
+$spacing-2: 0.5rem !default;     // 8px
+$spacing-3: 0.75rem !default;    // 12px
+$spacing-4: 1rem !default;       // 16px
+$spacing-5: 1.25rem !default;    // 20px
+$spacing-6: 1.5rem !default;     // 24px
+$spacing-8: 2rem !default;       // 32px
+$spacing-10: 2.5rem !default;    // 40px
+$spacing-12: 3rem !default;      // 48px
+$spacing-16: 4rem !default;      // 64px
+$spacing-20: 5rem !default;      // 80px
+$spacing-24: 6rem !default;      // 96px
+
+// Container Max Widths
+$container-sm: 640px !default;
+$container-md: 768px !default;
+$container-lg: 1024px !default;
+$container-xl: 1280px !default;
+$container-2xl: 1536px !default;
+
+// =============================================
+// 6. BORDER & SHADOWS
+// =============================================
+
+// Border Radius
+$border-radius-none: 0 !default;
+$border-radius-sm: 0.125rem !default;   // 2px
+$border-radius-base: 0.375rem !default; // 6px
+$border-radius-md: 0.5rem !default;     // 8px
+$border-radius-lg: 0.75rem !default;    // 12px
+$border-radius-xl: 1rem !default;       // 16px
+$border-radius-2xl: 1.5rem !default;    // 24px
+$border-radius-full: 9999px !default;
+
+// Border Widths
+$border-width-0: 0 !default;
+$border-width-1: 1px !default;
+$border-width-2: 2px !default;
+$border-width-4: 4px !default;
+
+// Shadows - Enterprise Level
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !default;
+$shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !default;
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !default;
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !default;
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !default;
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !default;
+
+// =============================================
+// 7. COMPONENT SPECIFIC VARIABLES
+// =============================================
+
+// Header & Navigation
+$header-height: 4rem !default;
+$sidebar-width: 16rem !default;
+$sidebar-collapsed-width: 5rem !default;
+
+// Cards
+$card-padding: $spacing-6 !default;
+$card-border-radius: $border-radius-xl !default;
+$card-shadow: $shadow-md !default;
+
+// Buttons
+$btn-padding-y: $spacing-3 !default;
+$btn-padding-x: $spacing-6 !default;
+$btn-border-radius: $border-radius-lg !default;
+$btn-font-weight: $font-weight-semibold !default;
+
+// Forms
+$input-height: 3rem !default;
+$input-padding-y: $spacing-3 !default;
+$input-padding-x: $spacing-4 !default;
+$input-border-radius: $border-radius-lg !default;
+$input-border-color: $color-gray-300 !default;
+
+// =============================================
+// 8. BREAKPOINTS
+// =============================================
+
+$breakpoint-xs: 480px !default;
+$breakpoint-sm: 640px !default;
+$breakpoint-md: 768px !default;
+$breakpoint-lg: 1024px !default;
+$breakpoint-xl: 1280px !default;
+$breakpoint-2xl: 1536px !default;
+
+// =============================================
+// 9. Z-INDEX SCALE
+// =============================================
+
+$z-index-dropdown: 1000 !default;
+$z-index-sticky: 1020 !default;
+$z-index-fixed: 1030 !default;
+$z-index-modal-backdrop: 1040 !default;
+$z-index-modal: 1050 !default;
+$z-index-popover: 1060 !default;
+$z-index-tooltip: 1070 !default;
+$z-index-toast: 1080 !default;
+
+// =============================================
+// 10. ANIMATION & TRANSITIONS
+// =============================================
+
+// Transitions
+$transition-base: all 0.3s ease-in-out !default;
+$transition-fast: all 0.15s ease-in-out !default;
+$transition-slow: all 0.5s ease-in-out !default;
+
+// Animations
+$animation-duration-base: 0.3s !default;
+$animation-duration-fast: 0.15s !default;
+$animation-duration-slow: 0.5s !default;
+
+// =============================================
+// 11. THEME SPECIFIC VARIABLES
+// =============================================
+
+// Role-based Colors
+$role-patient: $brand-primary !default;
+$role-doctor: $brand-secondary !default;
+$role-admin: $brand-accent !default;
+
+// Status Badges
+$status-badge-padding: $spacing-2 $spacing-3 !default;
+$status-badge-radius: $border-radius-full !default;
+
+// Appointment Time Slots
+$time-slot-available-bg: $color-success-light !default;
+$time-slot-available-color: $color-success-dark !default;
+$time-slot-booked-bg: $color-error-light !default;
+$time-slot-booked-color: $color-error-dark !default;
+$time-slot-pending-bg: $color-warning-light !default;
+$time-slot-pending-color: $color-warning-dark !default;
+
+// =============================================
+// 12. UTILITY CLASSES MIXINS
+// =============================================
+
+// Text Colors
+@mixin text-color-variants {
+  .text-primary { color: $brand-primary; }
+  .text-secondary { color: $brand-secondary; }
+  .text-accent { color: $brand-accent; }
+  .text-success { color: $color-success; }
+  .text-warning { color: $color-warning; }
+  .text-error { color: $color-error; }
+  .text-info { color: $color-info; }
+}
+
+// Background Colors
+@mixin bg-color-variants {
+  .bg-primary { background-color: $brand-primary; }
+  .bg-secondary { background-color: $brand-secondary; }
+  .bg-accent { background-color: $brand-accent; }
+  .bg-success { background-color: $color-success; }
+  .bg-warning { background-color: $color-warning; }
+  .bg-error { background-color: $color-error; }
+  .bg-info { background-color: $color-info; }
+}
+
+// Border Colors
+@mixin border-color-variants {
+  .border-primary { border-color: $brand-primary; }
+  .border-secondary { border-color: $brand-secondary; }
+  .border-accent { border-color: $brand-accent; }
+  .border-success { border-color: $color-success; }
+  .border-warning { border-color: $color-warning; }
+  .border-error { border-color: $color-error; }
+  .border-info { border-color: $color-info; }
+}
+
+// =============================================
+// 13. COMPONENT MIXINS
+// =============================================
+
+// Button Variants
+@mixin button-variant($background, $color, $hover-background, $hover-color) {
+  background-color: $background;
+  color: $color;
+  border: 1px solid $background;
+  
+  &:hover:not(:disabled) {
+    background-color: $hover-background;
+    color: $hover-color;
+    border-color: $hover-background;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Card Component
+@mixin card($padding: $card-padding, $radius: $card-border-radius, $shadow: $card-shadow) {
+  background: $color-white;
+  padding: $padding;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  border: 1px solid $color-gray-200;
+}
+
+// Input Component
+@mixin input-base {
+  height: $input-height;
+  padding: $input-padding-y $input-padding-x;
+  border: 1px solid $input-border-color;
+  border-radius: $input-border-radius;
+  background-color: $color-white;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  transition: $transition-base;
+  
+  &:focus {
+    outline: none;
+    border-color: $brand-primary;
+    box-shadow: 0 0 0 3px rgba($brand-primary, 0.1);
+  }
+  
+  &.error {
+    border-color: $color-error;
+    box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+  }
+}
+
+// =============================================
+// 14. RESPONSIVE MIXINS
+// =============================================
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: #{$breakpoint-xs}) { @content; }
+  }
+  @if $breakpoint == sm {
+    @media (max-width: #{$breakpoint-sm}) { @content; }
+  }
+  @if $breakpoint == md {
+    @media (max-width: #{$breakpoint-md}) { @content; }
+  }
+  @if $breakpoint == lg {
+    @media (max-width: #{$breakpoint-lg}) { @content; }
+  }
+  @if $breakpoint == xl {
+    @media (max-width: #{$breakpoint-xl}) { @content; }
+  }
+  @if $breakpoint == 2xl {
+    @media (max-width: #{$breakpoint-2xl}) { @content; }
+  }
+}
+
+// =============================================
+// 15. EXPORT FOR JAVASCRIPT USAGE
+// =============================================
+
+:export {
+  // Colors
+  primary: $brand-primary;
+  secondary: $brand-secondary;
+  accent: $brand-accent;
+  success: $color-success;
+  warning: $color-warning;
+  error: $color-error;
+  
+  // Breakpoints
+  breakpointXs: $breakpoint-xs;
+  breakpointSm: $breakpoint-sm;
+  breakpointMd: $breakpoint-md;
+  breakpointLg: $breakpoint-lg;
+  breakpointXl: $breakpoint-xl;
+}

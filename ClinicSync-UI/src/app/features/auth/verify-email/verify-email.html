@@ -1,0 +1,295 @@
+<div class="verify-email-wrapper">
+  <div class="verify-email-container">
+    <!-- Left Side - Branding & Security -->
+    <div class="brand-section">
+      <div class="brand-content">
+        <!-- Logo -->
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <path d="M24 2L30 10L40 6L42 16L34 22L42 30L40 40L30 36L24 44L18 36L8 40L6 30L14 22L6 16L8 6L18 10L24 2Z" 
+                    fill="#2563eb"/>
+              <circle cx="24" cy="24" r="8" fill="#059669"/>
+              <path d="M20 24L22 26L28 20" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-name">Clinic Sync</h1>
+            <p class="brand-tagline">Enterprise Healthcare Platform</p>
+          </div>
+        </div>
+
+        <!-- Email Illustration -->
+        <div class="email-illustration">
+          <div class="illustration-container">
+            <div class="email-icon">
+              <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                <!-- Envelope -->
+                <path d="M20 40L40 55L60 45L80 55L100 40M20 40V80C20 82.2091 21.7909 84 24 84H96C98.2091 84 100 82.2091 100 80V40M20 40L60 70L100 40" 
+                      stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <!-- Check Mark Animation -->
+                <path *ngIf="status === 'success'" class="check-mark" 
+                      d="M45 65L55 75L75 55" 
+                      stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <!-- Loading Animation -->
+                <circle *ngIf="status === 'verifying'" class="loading-circle"
+                        cx="60" cy="60" r="20" 
+                        stroke="rgba(255,255,255,0.6)" stroke-width="3" 
+                        stroke-dasharray="32 32" stroke-dashoffset="32" fill="none"/>
+                <!-- Error Mark -->
+                <path *ngIf="status === 'error'" class="error-mark"
+                      d="M50 50L70 70M70 50L50 70" 
+                      stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="illustration-text">
+              <h3>Email Verification</h3>
+              <p>Securing your healthcare account</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Features -->
+        <div class="security-features">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>HIPAA Compliant Verification</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>Secure Account Activation</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span>Instant Access Upon Verification</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Verification Content -->
+    <div class="content-section">
+      <div class="content-container">
+        
+        <!-- Initial State - Waiting for Verification -->
+        <div *ngIf="status === 'initial'" class="verification-state initial-state">
+          <div class="state-icon">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <path d="M40 15C50 15 55 20 55 30C55 45 45 55 40 60C35 55 25 45 25 30C25 20 30 15 40 15Z" 
+                    stroke="#3b82f6" stroke-width="3" fill="none"/>
+              <path d="M40 25C45 25 48 28 48 33C48 38 45 41 40 41C35 41 32 38 32 33C32 28 35 25 40 25Z" 
+                    fill="#dbeafe"/>
+              <path d="M36 33L38 35L44 29" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          
+          <div class="state-content">
+            <h2 class="state-title">Verify Your Email Address</h2>
+            <p class="state-description">
+              We've sent a verification link to your email address. 
+              Please check your inbox and click the link to complete your registration.
+            </p>
+            
+            <div class="email-display">
+              <div class="email-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M2.5 6.66667L8.232 10.596C8.688 10.924 9.312 10.924 9.768 10.596L15.5 6.66667M4.5 4H14.5C15.6046 4 16.5 4.89543 16.5 6V14C16.5 15.1046 15.6046 16 14.5 16H4.5C3.39543 16 2.5 15.1046 2.5 14V6C2.5 4.89543 3.39543 4 4.5 4Z" 
+                        stroke="#6b7280" stroke-width="1.5" fill="none"/>
+                </svg>
+              </div>
+              <span class="email-address">{{ email }}</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-primary" (click)="resendVerification()">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M15 6H16C16.5304 6 17.0391 6.21071 17.4142 6.58579C17.7893 6.96086 18 7.46957 18 8V14C18 14.5304 17.7893 15.0391 17.4142 15.4142C17.0391 15.7893 16.5304 16 16 16H4C3.46957 16 2.96086 15.7893 2.58579 15.4142C2.21071 15.0391 2 14.5304 2 14V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H5M15 6V3C15 1.67392 14.4732 0.40215 13.5355 -0.535533C12.5979 -1.47322 11.3261 -2 10 -2C8.67392 -2 7.40215 -1.47322 6.46447 -0.535533C5.52678 0.40215 5 1.67392 5 3V6M15 6H5" 
+                      stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+              Resend Verification Email
+            </button>
+            
+            <a routerLink="/auth/login" class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Back to Sign In
+            </a>
+          </div>
+
+          <div class="help-section">
+            <div class="help-item">
+              <div class="help-icon">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" 
+                        stroke="#6b7280" stroke-width="1.5"/>
+                  <path d="M9 12H9.0075" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M9 6V9" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="help-content">
+                <h5>Didn't receive the email?</h5>
+                <p>Check your spam folder or ensure you entered the correct email address. The verification link expires in 24 hours.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verifying State -->
+        <div *ngIf="status === 'verifying'" class="verification-state verifying-state">
+          <div class="state-icon">
+            <div class="loading-spinner">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="30" stroke="#dbeafe" stroke-width="4" fill="none"/>
+                <circle class="spinner-circle" cx="40" cy="40" r="30" stroke="#2563eb" stroke-width="4" 
+                        stroke-dasharray="188" stroke-dashoffset="188" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="state-content">
+            <h2 class="state-title">Verifying Your Email</h2>
+            <p class="state-description">
+              We're confirming your email address. This will only take a moment...
+            </p>
+          </div>
+
+          <div class="progress-indicator">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">Processing verification...</div>
+          </div>
+        </div>
+
+        <!-- Success State -->
+        <div *ngIf="status === 'success'" class="verification-state success-state">
+          <div class="state-icon">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="30" fill="#d1fae5"/>
+              <path d="M32 40L38 46L48 34" stroke="#059669" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          
+          <div class="state-content">
+            <h2 class="state-title">Email Verified Successfully!</h2>
+            <p class="state-description">
+              Your email address has been verified. You're being redirected to sign in to access your Clinic Sync account.
+            </p>
+          </div>
+
+          <div class="countdown-section">
+            <div class="countdown-card">
+              <div class="countdown-number">{{ countdown }}</div>
+              <div class="countdown-text">
+                <div>Redirecting in</div>
+                <div>seconds</div>
+              </div>
+            </div>
+            
+            <div class="countdown-message">
+              You will be automatically redirected to the sign in page
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <a routerLink="/auth/login" class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M16 9H2M2 9L7 14M2 9L7 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Sign In Now
+            </a>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="status === 'error'" class="verification-state error-state">
+          <div class="state-icon">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="30" fill="#fee2e2"/>
+              <path d="M32 32L48 48M48 32L32 48" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          
+          <div class="state-content">
+            <h2 class="state-title">Verification Failed</h2>
+            <p class="state-description">
+              {{ message }}
+            </p>
+          </div>
+
+          <div class="error-details">
+            <div class="error-item">
+              <div class="error-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" 
+                        stroke="#ef4444" stroke-width="1.5"/>
+                  <path d="M10 6V10M10 14H10.01" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="error-content">
+                <h5>Possible Issues</h5>
+                <ul>
+                  <li>The verification link may have expired</li>
+                  <li>The link might have been used already</li>
+                  <li>There could be a temporary system issue</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-primary" (click)="resendVerification()">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M15 6H16C16.5304 6 17.0391 6.21071 17.4142 6.58579C17.7893 6.96086 18 7.46957 18 8V14C18 14.5304 17.7893 15.0391 17.4142 15.4142C17.0391 15.7893 16.5304 16 16 16H4C3.46957 16 2.96086 15.7893 2.58579 15.4142C2.21071 15.0391 2 14.5304 2 14V8C2 7.46957 2.21071 6.96086 2.58579 6.58579C2.96086 6.21071 3.46957 6 4 6H5M15 6V3C15 1.67392 14.4732 0.40215 13.5355 -0.535533C12.5979 -1.47322 11.3261 -2 10 -2C8.67392 -2 7.40215 -1.47322 6.46447 -0.535533C5.52678 0.40215 5 1.67392 5 3V6M15 6H5" 
+                      stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+              Resend Verification Email
+            </button>
+            
+            <a routerLink="/auth/support" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M16 2H12L10.5 0H7.5L6 2H2C1.44772 2 1 2.44772 1 3V15C1 15.5523 1.44772 16 2 16H16C16.5523 16 17 15.5523 17 15V3C17 2.44772 16.5523 2 16 2Z" 
+                      stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M9 13C11.2091 13 13 11.2091 13 9C13 6.79086 11.2091 5 9 5C6.79086 5 5 6.79086 5 9C5 11.2091 6.79086 13 9 13Z" 
+                      stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M9 7V9L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Contact Support
+            </a>
+          </div>
+        </div>
+
+        <!-- Message Display -->
+        <div *ngIf="message && status !== 'error'" class="message-display" [class.success]="status === 'success'">
+          <div class="message-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" *ngIf="status === 'success'">
+              <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" *ngIf="status === 'initial'">
+              <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" 
+                    stroke="#3b82f6" stroke-width="1.5"/>
+              <path d="M10 6V10M10 14H10.01" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="message-content">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
