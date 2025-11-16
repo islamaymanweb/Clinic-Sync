@@ -10,12 +10,6 @@ export interface RegisterRequest {
   password: string;
   confirmPassword: string;
 }
-
-export interface VerifyEmailRequest {
-  token: string;
-  email: string;
-}
-
 export interface ForgotPasswordRequest {
   email: string;
 }

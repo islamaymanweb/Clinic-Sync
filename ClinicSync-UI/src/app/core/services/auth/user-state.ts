@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from '../../../shared/models/user';
-import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -12,7 +11,7 @@ export class UserState {
 
   private readonly USER_KEY = 'healthsync_current_user';
 
-  constructor(private cookieService: CookieService) {
+  constructor() {
     this.loadUserFromStorage();
   }
 
@@ -56,14 +55,15 @@ export class UserState {
   }
 
   /**
-   * تحميل المستخدم من التخزين
+   * تحميل المستخدم من التخزين - استخدام localStorage
    */
   private loadUserFromStorage(): void {
     try {
-      const userData = this.cookieService.get(this.USER_KEY);
+      const userData = localStorage.getItem(this.USER_KEY);
       if (userData) {
         const user = JSON.parse(userData) as UserInfo;
         this.currentUserSubject.next(user);
+        console.log('✅ User loaded from localStorage:', user.email);
       }
     } catch (error) {
       console.error('Error loading user from storage:', error);
@@ -72,12 +72,13 @@ export class UserState {
   }
 
   /**
-   * حفظ المستخدم في التخزين
+   * حفظ المستخدم في التخزين - استخدام localStorage
    */
   private saveUserToStorage(user: UserInfo): void {
     try {
       const userData = JSON.stringify(user);
-      this.cookieService.set(this.USER_KEY, userData, 1); // صلاحية يوم واحد
+      localStorage.setItem(this.USER_KEY, userData);
+      console.log('✅ User saved to localStorage:', user.email);
     } catch (error) {
       console.error('Error saving user to storage:', error);
     }
@@ -87,6 +88,11 @@ export class UserState {
    * إزالة المستخدم من التخزين
    */
   private removeUserFromStorage(): void {
-    this.cookieService.delete(this.USER_KEY);
+    try {
+      localStorage.removeItem(this.USER_KEY);
+      console.log('✅ User removed from localStorage');
+    } catch (error) {
+      console.error('Error removing user from storage:', error);
+    }
   }
 }

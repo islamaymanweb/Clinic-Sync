@@ -3,6 +3,7 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace API.Controllers
@@ -14,15 +15,17 @@ namespace API.Controllers
         private readonly IAuthService _authService;
         private readonly ITokenService _tokenService;
         private readonly ILogger<AuthController> _logger;
-
+        private readonly IConfiguration _configuration;
         public AuthController(
             IAuthService authService,
             ITokenService tokenService,
-            ILogger<AuthController> logger)
+            ILogger<AuthController> logger,
+            IConfiguration configuration)
         {
             _authService = authService;
             _tokenService = tokenService;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -66,7 +69,7 @@ namespace API.Controllers
         {
             try
             {
-                // ✅ تمرير HttpContext لخدمة المصادقة
+                
                 var result = await _authService.LoginAsync(request, HttpContext);
 
                 if (result.Success)
@@ -123,7 +126,7 @@ namespace API.Controllers
         }
 
         [HttpGet("me")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Cookies,Bearer")]
         public async Task<ActionResult<ApiResponse<UserInfo>>> GetCurrentUser()
         {
             try
@@ -175,42 +178,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("verify-email")]
-        public async Task<ActionResult<ApiResponse<AuthResponse>>> VerifyEmail(VerifyEmailRequest request)
-        {
-            try
-            {
-                var result = await _authService.VerifyEmailAsync(request.Token, request.Email);
-
-                if (result.Success)
-                {
-                    _logger.LogInformation("Email verified: {Email}", request.Email);
-                    return Ok(new ApiResponse<AuthResponse>
-                    {
-                        Success = true,
-                        Message = result.Message,
-                        Data = result
-                    });
-                }
-
-                return BadRequest(new ApiResponse<AuthResponse>
-                {
-                    Success = false,
-                    Message = result.Message,
-                    Errors = result.Errors
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during email verification for {Email}", request.Email);
-                return StatusCode(500, new ApiResponse<AuthResponse>
-                {
-                    Success = false,
-                    Message = "An error occurred during email verification"
-                });
-            }
-        }
-
+       
         [HttpPost("forgot-password")]
         public async Task<ActionResult<ApiResponse<AuthResponse>>> ForgotPassword(ForgotPasswordRequest request)
         {
@@ -271,5 +239,6 @@ namespace API.Controllers
                 });
             }
         }
+        
     }
 }

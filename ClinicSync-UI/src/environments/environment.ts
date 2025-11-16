@@ -32,9 +32,10 @@ export const environment = {
       register: '/api/auth/register',
       logout: '/api/auth/logout',
       me: '/api/auth/me',
-      verifyEmail: '/api/auth/verify-email',
+ 
       forgotPassword: '/api/auth/forgot-password',
-      resetPassword: '/api/auth/reset-password'
+      resetPassword: '/api/auth/reset-password',
+ 
     },
     admin: {
       doctors: '/api/admin/doctors',

@@ -19,7 +19,7 @@ namespace Core.Entities
 
         public bool IsActive { get; set; } = true;
 
-        public bool EmailVerified { get; set; } = false;
+        //public bool EmailVerified { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

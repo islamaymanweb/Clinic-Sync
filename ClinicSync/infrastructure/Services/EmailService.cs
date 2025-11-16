@@ -21,25 +21,65 @@ namespace infrastructure.Services
             _smtpSettings = smtpSettings.Value;
             _logger = logger;
         }
+     
+        //public async Task SendEmailVerificationAsync(string email, string name, string token)
+        //{
+        //    try
+        //    {
+        //        var frontendBaseUrl = _smtpSettings.FrontendBaseUrl?.TrimEnd('/') ?? "http://localhost:4200";
+ 
+        //        var encodedToken = WebUtility.UrlEncode(token);
+        //        var encodedEmail = WebUtility.UrlEncode(email);
 
-        public async Task SendEmailVerificationAsync(string email, string name, string token)
-        {
-            // ✅ استخدام Frontend URL بدلاً من Backend URL
-            var verificationUrl = $"{_smtpSettings.FrontendBaseUrl}/auth/verify-email?token={token}&email={email}";
+        //        var verificationUrl = $"{frontendBaseUrl}/auth/verify-email?token={encodedToken}&email={encodedEmail}";
 
-            var subject = "Verify Your Email - HealthSync";
-            var body = $"""
-                <h2>Welcome to HealthSync, {name}!</h2>
-                <p>Please verify your email address by clicking the link below:</p>
-                <p><a href="{verificationUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
-                <p>Or copy this link: {verificationUrl}</p>
-                <p>This link will expire in 24 hours.</p>
-                <br>
-                <p>Best regards,<br>HealthSync Team</p>
-                """;
+        //        Console.WriteLine($"🔗 Verification URL: {verificationUrl}"); 
 
-            await SendEmailAsync(email, name, subject, body);
-        }
+        //        var subject = "Verify Your Email - HealthSync";
+        //        var body = $"""
+        //    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        //        <h2 style="color: #007bff;">Welcome to HealthSync, {name}!</h2>
+        //        <p>Please verify your email address by clicking the button below:</p>
+                
+        //        <div style="text-align: center; margin: 30px 0;">
+        //            <a href="{verificationUrl}" 
+        //               style="background-color: #007bff; color: white; padding: 12px 24px; 
+        //                      text-decoration: none; border-radius: 5px; display: inline-block; 
+        //                      font-weight: bold;">
+        //                Verify Email Address
+        //            </a>
+        //        </div>
+                
+        //        <p style="color: #666; font-size: 14px;">
+        //            <strong>Or copy this link:</strong><br>
+        //            <span style="background: #f8f9fa; padding: 10px; border-radius: 5px; 
+        //                         word-break: break-all; display: inline-block; margin-top: 5px; 
+        //                         font-family: monospace; font-size: 12px;">
+        //                {verificationUrl}
+        //            </span>
+        //        </p>
+                
+        //        <p style="color: #999; font-size: 12px; margin-top: 20px;">
+        //            This link will expire in 24 hours.
+        //        </p>
+                
+        //        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                
+        //        <p style="color: #777; font-size: 12px;">
+        //            If the button doesn't work, please make sure you're using a modern web browser 
+        //            and that you copy the entire link into your browser's address bar.
+        //        </p>
+        //    </div>
+        //    """;
+
+        //        await SendEmailAsync(email, name, subject, body);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Failed to send verification email to {Email}", email);
+        //        throw;
+        //    }
+        //}
 
         public async Task SendPasswordResetAsync(string email, string name, string token)
         {
@@ -123,6 +163,6 @@ namespace infrastructure.Services
         public string FromName { get; set; } = string.Empty;
         public string FromEmail { get; set; } = string.Empty;
         public bool EnableSsl { get; set; }
-        public string FrontendBaseUrl { get; set; } = string.Empty; // ✅ جديد
+        public string FrontendBaseUrl { get; set; } = string.Empty;  
     }
 }

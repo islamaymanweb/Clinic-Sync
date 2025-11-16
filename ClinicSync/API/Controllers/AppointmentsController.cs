@@ -9,7 +9,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
@@ -22,6 +22,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Cookies,Bearer")]
         public async Task<ActionResult<PaginatedAppointmentsResponse>> GetMyAppointments(
             [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -73,6 +74,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "Cookies,Bearer")]
         public async Task<ActionResult<AppointmentResponse>> GetAppointment(Guid id)
         {
             try
@@ -141,12 +143,26 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = "Cookies,Bearer", Roles = "Patient")]
         public async Task<ActionResult<AppointmentResponse>> CreateAppointment(CreateAppointmentRequest request)
         {
             try
             {
-                var patientId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                // ✅ Logging للتصحيح
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userRoleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+                var authScheme = User.Identity?.AuthenticationType;
+                
+                _logger.LogInformation("🔐 CreateAppointment - UserId: {UserId}, Role: {Role}, AuthScheme: {Scheme}, HasCookie: {HasCookie}",
+                    userIdClaim, userRoleClaim, authScheme, Request.Cookies.ContainsKey("ClinicSync.Auth"));
+                
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    _logger.LogWarning("❌ User ID not found in claims");
+                    return Unauthorized(new { message = "User not authenticated" });
+                }
+                
+                var patientId = Guid.Parse(userIdClaim);
                 var appointment = await _appointmentService.CreateAppointmentAsync(request, patientId);
 
                 return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
@@ -246,32 +262,59 @@ namespace API.Controllers
             }
         }
 
+        //[HttpGet("availability")]
+        //public async Task<ActionResult<AvailabilityResponse>> GetDoctorAvailability(
+        //    [FromQuery] DoctorAvailabilityRequest request)
+        //{
+        //    try
+        //    {
+        //        var response = await _appointmentService.GetDoctorAvailabilityAsync(request);
+
+        //        if (!response.Success)
+        //        {
+        //            return BadRequest(response);
+        //        }
+
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error getting doctor availability");
+        //        return StatusCode(500, new AvailabilityResponse
+        //        {
+        //            Success = false,
+        //            Message = "An error occurred while checking availability"
+        //        });
+        //    }
+        //}
+        // Controllers/AppointmentsController.cs - التأكد من وجود هذا الـ Endpoint
         [HttpGet("availability")]
+        [AllowAnonymous]
         public async Task<ActionResult<AvailabilityResponse>> GetDoctorAvailability(
-            [FromQuery] DoctorAvailabilityRequest request)
+       [FromQuery] DoctorAvailabilityRequest request)
         {
+            _logger.LogInformation("📅 Availability request - DoctorId: {DoctorId}, Date: {Date}",
+                request.DoctorId, request.Date);
+
             try
             {
                 var response = await _appointmentService.GetDoctorAvailabilityAsync(request);
 
-                if (!response.Success)
-                {
-                    return BadRequest(response);
-                }
+                _logger.LogInformation("✅ Availability response - Success: {Success}, Slots: {SlotCount}",
+                    response.Success, response.TimeSlots?.Count ?? 0);
 
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting doctor availability");
+                _logger.LogError(ex, "❌ Error in availability endpoint");
                 return StatusCode(500, new AvailabilityResponse
                 {
                     Success = false,
-                    Message = "An error occurred while checking availability"
+                    Message = "Internal server error"
                 });
             }
         }
-
         [HttpGet("{id}/can-cancel")]
         [Authorize(Roles = "Patient")]
         public async Task<ActionResult<bool>> CanCancelAppointment(Guid id)

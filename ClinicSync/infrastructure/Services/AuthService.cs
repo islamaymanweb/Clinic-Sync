@@ -17,6 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace infrastructure.Services
 {
@@ -29,14 +30,14 @@ namespace infrastructure.Services
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
         private readonly ITokenService _tokenService;
-
+        private readonly ILogger<EmailService> _logger;
         public AuthService(
             UserManager<AppUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
             IEmailService emailService,
             IConfiguration configuration,
             ApplicationDbContext context,
-            ITokenService tokenService)
+            ITokenService tokenService, ILogger<EmailService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -44,6 +45,7 @@ namespace infrastructure.Services
             _configuration = configuration;
             _context = context;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request, HttpContext httpContext)
@@ -61,10 +63,7 @@ namespace infrastructure.Services
                     return new AuthResponse { Success = false, Message = "Account is deactivated" };
                 }
 
-                if (!user.EmailVerified)
-                {
-                    return new AuthResponse { Success = false, Message = "Please verify your email before logging in" };
-                }
+                // ✅ تم حذف التحقق من EmailVerified
 
                 var result = await _userManager.CheckPasswordAsync(user, request.Password);
                 if (!result)
@@ -104,10 +103,11 @@ namespace infrastructure.Services
                 httpContext.Response.Cookies.Append("ClinicSync.Auth", token, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
+                    Secure = false, // ✅ في Development: false للسماح بـ http://localhost
+                    SameSite = SameSiteMode.Lax, // ✅ أفضل من Strict للـ API calls
                     Expires = request.RememberMe ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddDays(1),
-                    Path = "/"
+                    Path = "/",
+                    Domain = null // ✅ لا نحدد domain للسماح بالعمل مع localhost
                 });
 
                 var userInfo = new UserInfo
@@ -131,6 +131,8 @@ namespace infrastructure.Services
                 return new AuthResponse { Success = false, Message = $"Login failed: {ex.Message}" };
             }
         }
+
+
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
         {
             try
@@ -142,7 +144,7 @@ namespace infrastructure.Services
                     return new AuthResponse { Success = false, Message = "User already exists with this email" };
                 }
 
-                // Create new user
+                // Create new user - بدون EmailVerified
                 var user = new AppUser
                 {
                     Id = Guid.NewGuid(),
@@ -151,7 +153,6 @@ namespace infrastructure.Services
                     Email = request.Email,
                     Role = UserRole.Patient,
                     IsActive = true,
-                    EmailVerified = false,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -179,16 +180,12 @@ namespace infrastructure.Services
                 _context.Patients.Add(patient);
                 await _context.SaveChangesAsync();
 
-                // Send email verification
-                var verificationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(verificationToken));
-
-                await _emailService.SendEmailVerificationAsync(user.Email!, user.FullName, encodedToken);
+                // ✅ تم حذف إرسال بريد التحقق
 
                 return new AuthResponse
                 {
                     Success = true,
-                    Message = "Registration successful. Please check your email for verification."
+                    Message = "Registration successful. You can now login."
                 };
             }
             catch (Exception ex)
@@ -197,50 +194,12 @@ namespace infrastructure.Services
             }
         }
 
-        public async Task<AuthResponse> VerifyEmailAsync(string token, string email)
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(email);
-                if (user == null)
-                {
-                    return new AuthResponse { Success = false, Message = "User not found" };
-                }
-
-                var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-                var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
-
-                if (result.Succeeded)
-                {
-                    user.EmailVerified = true;
-                    await _userManager.UpdateAsync(user);
-
-                    return new AuthResponse { Success = true, Message = "Email verified successfully" };
-                }
-
-                return new AuthResponse
-                {
-                    Success = false,
-                    Message = "Email verification failed",
-                    Errors = result.Errors.Select(e => e.Description).ToList()
-                };
-            }
-            catch (Exception ex)
-            {
-                return new AuthResponse { Success = false, Message = $"Verification failed: {ex.Message}" };
-            }
-        }
-
         public async Task<AuthResponse> ForgotPasswordAsync(string email)
         {
             try
             {
                 var user = await _userManager.FindByEmailAsync(email);
-                if (user == null || !user.EmailVerified)
-                {
-                    // Don't reveal that the user doesn't exist
-                    return new AuthResponse { Success = true, Message = "If the email exists, a reset link has been sent" };
-                }
+               
 
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
@@ -323,7 +282,6 @@ namespace infrastructure.Services
                     Email = request.Email,
                     Role = UserRole.Doctor,
                     IsActive = true,
-                    EmailVerified = true, // Auto-verify for doctors created by admin
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -399,5 +357,6 @@ namespace infrastructure.Services
 
             return new string(chars);
         }
+       
     }
 }

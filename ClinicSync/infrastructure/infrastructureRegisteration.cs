@@ -44,7 +44,8 @@ namespace infrastructure
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
+   
+                options.SignIn.RequireConfirmedEmail = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -60,8 +61,10 @@ namespace infrastructure
             {
                 options.Cookie.Name = "ClinicSync.Auth";
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Strict;
+                // ✅ في Development: استخدام SameSite.None للسماح بالـ cookies عبر origins مختلفة
+                // في Production: يمكن استخدام SameSiteMode.Strict
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // ✅ يعمل مع http و https
+                options.Cookie.SameSite = SameSiteMode.Lax; // ✅ أفضل من Strict للـ API calls
                 options.Cookie.MaxAge = TimeSpan.FromDays(7); // Remember me duration
                 options.LoginPath = "/api/auth/login";
                 options.AccessDeniedPath = "/api/auth/access-denied";
@@ -78,7 +81,13 @@ namespace infrastructure
                     },
                     OnRedirectToLogin = context =>
                     {
-                        context.Response.StatusCode = 401;
+                        // ✅ للـ API calls، نرجع 401 بدلاً من redirect
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = 401;
+                            return Task.CompletedTask;
+                        }
+                        context.Response.Redirect(context.RedirectUri);
                         return Task.CompletedTask;
                     }
                 };
@@ -96,6 +105,29 @@ namespace infrastructure
                     ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"])),
                     ClockSkew = TimeSpan.Zero
+                };
+                
+                // ✅ إضافة دعم لقراءة JWT token من الـ cookie
+                options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // ✅ محاولة قراءة الـ token من Authorization header أولاً
+                        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                        
+                        // ✅ إذا لم يكن موجوداً في header، نقرأه من cookie
+                        if (string.IsNullOrEmpty(token))
+                        {
+                            token = context.Request.Cookies["ClinicSync.Auth"];
+                        }
+                        
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

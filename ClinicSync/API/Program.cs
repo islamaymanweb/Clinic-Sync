@@ -28,19 +28,19 @@ if (app.Environment.IsDevelopment())
 }
  
 
-app.UseHttpsRedirection();
-
+// ✅ ترتيب الـ middleware مهم جداً!
+// 1. CORS يجب أن يكون قبل Authentication
 app.UseCors(policy => policy
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
     .AllowAnyHeader()
     .AllowAnyMethod()
-    .AllowCredentials()
-    .WithExposedHeaders("X-Pagination", "X-Total-Count"));
+    .AllowCredentials() // ✅ مهم جداً للـ cookies
+    .WithExposedHeaders("X-Pagination", "X-Total-Count")
+    .SetIsOriginAllowed(origin => true)); // ✅ للسماح بأي origin في development
 
 app.UseHttpsRedirection();
- 
-//app.UseCors("AllowClinicSync");
 
+// 2. Authentication قبل Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

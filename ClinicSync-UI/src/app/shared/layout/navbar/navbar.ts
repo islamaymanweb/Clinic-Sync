@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy, signal, ElementRef, ViewChild, computed } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { UserRole } from '../../models/enums';
@@ -7,7 +7,6 @@ import { UserInfo } from '../../models/user';
 import { Auth } from '../../../core/services/auth/auth';
 import { UserState } from '../../../core/services/auth/user-state';
  
-
 interface NavItem {
   label: string;
   path: string;
@@ -29,42 +28,37 @@ type NavItemsMap = {
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss']
 })
-export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم الكلاس
+export class Navbar implements OnInit, OnDestroy {
   isScrolled = false;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
+  isVisible = false;
   currentUser: UserInfo | null = null;
+  indicatorTransform = 'translateX(0) scaleX(0)';
+  
   private subscriptions: Subscription = new Subscription();
+  private activeLinkIndex = 0;
+  
+  @ViewChild('mobileSidebar') mobileSidebar!: ElementRef<HTMLElement>;
 
   navItems: NavItemsMap = {
     [UserRole.Patient]: [
       {
-        label: 'Home',
+        label: 'Dashboard',
         path: '/patient/dashboard',
         icon: '🏠',
         roles: [UserRole.Patient]
       },
       {
-        label: 'Doctors',
-        path: '/patient/doctors',
+        label: 'Find Doctors',
+        path: '/doctors',
         icon: '👨‍⚕️',
-        roles: [UserRole.Patient],
-        children: [
-          { label: 'Search Doctors', path: '/patient/doctors', icon: '🔍', roles: [UserRole.Patient] },
-          { label: 'Specialties', path: '/patient/specialties', icon: '🎯', roles: [UserRole.Patient] },
-          { label: 'Available Slots', path: '/patient/available-slots', icon: '📅', roles: [UserRole.Patient] }
-        ]
+        roles: [UserRole.Patient]
       },
       {
         label: 'My Appointments',
         path: '/patient/appointments',
         icon: '📋',
-        roles: [UserRole.Patient]
-      },
-      {
-        label: 'Medical Records',
-        path: '/patient/medical-records',
-        icon: '📁',
         roles: [UserRole.Patient]
       },
       {
@@ -85,12 +79,13 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
         label: 'Appointments',
         path: '/doctor/appointments',
         icon: '📅',
-        roles: [UserRole.Doctor],
-        children: [
-          { label: 'Schedule', path: '/doctor/schedule', icon: '🗓️', roles: [UserRole.Doctor] },
-          { label: 'Upcoming Appointments', path: '/doctor/upcoming', icon: '⏰', roles: [UserRole.Doctor] },
-          { label: 'Past Appointments', path: '/doctor/history', icon: '📋', roles: [UserRole.Doctor] }
-        ]
+        roles: [UserRole.Doctor]
+      },
+      {
+        label: 'Schedule',
+        path: '/doctor/schedule',
+        icon: '🗓️',
+        roles: [UserRole.Doctor]
       },
       {
         label: 'Patients',
@@ -99,57 +94,41 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
         roles: [UserRole.Doctor]
       },
       {
-        label: 'Medical Records',
-        path: '/doctor/medical-records',
-        icon: '🏥',
-        roles: [UserRole.Doctor]
-      },
-      {
-        label: 'Clinic Settings',
-        path: '/doctor/clinic-settings',
-        icon: '⚙️',
+        label: 'Profile',
+        path: '/doctor/profile',
+        icon: '👤',
         roles: [UserRole.Doctor]
       }
     ],
     [UserRole.Admin]: [
       {
-        label: 'Admin Panel',
+        label: 'Dashboard',
         path: '/admin/dashboard',
         icon: '👑',
         roles: [UserRole.Admin]
       },
       {
-        label: 'User Management',
-        path: '/admin/users',
-        icon: '👥',
-        roles: [UserRole.Admin],
-        children: [
-          { label: 'All Users', path: '/admin/users', icon: '👨‍👩‍👧‍👦', roles: [UserRole.Admin] },
-          { label: 'Add Doctor', path: '/admin/doctors/create', icon: '➕', roles: [UserRole.Admin] },
-          { label: 'Join Requests', path: '/admin/join-requests', icon: '📥', roles: [UserRole.Admin] }
-        ]
+        label: 'Appointments',
+        path: '/admin/appointments',
+        icon: '📅',
+        roles: [UserRole.Admin]
       },
       {
-        label: 'Clinics Management',
-        path: '/admin/clinics',
-        icon: '🏥',
+        label: 'Doctors',
+        path: '/admin/doctors',
+        icon: '👨‍⚕️',
+        roles: [UserRole.Admin]
+      },
+      {
+        label: 'Users',
+        path: '/admin/users',
+        icon: '👥',
         roles: [UserRole.Admin]
       },
       {
         label: 'Reports',
         path: '/admin/reports',
         icon: '📈',
-        roles: [UserRole.Admin],
-        children: [
-          { label: 'Financial Reports', path: '/admin/financial-reports', icon: '💰', roles: [UserRole.Admin] },
-          { label: 'Usage Reports', path: '/admin/usage-reports', icon: '📊', roles: [UserRole.Admin] },
-          { label: 'Doctor Statistics', path: '/admin/doctor-stats', icon: '👨‍⚕️', roles: [UserRole.Admin] }
-        ]
-      },
-      {
-        label: 'Settings',
-        path: '/admin/settings',
-        icon: '⚙️',
         roles: [UserRole.Admin]
       }
     ]
@@ -168,7 +147,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
       children: [
         { label: 'All Doctors', path: '/doctors', icon: '🔍' },
         { label: 'Specialties', path: '/specialties', icon: '🎯' },
-        { label: 'Advanced Centers', path: '/medical-centers', icon: '🏥' }
+        { label: 'Medical Centers', path: '/medical-centers', icon: '🏥' }
       ]
     },
     {
@@ -176,7 +155,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
       path: '/services',
       icon: '💊',
       children: [
-        { label: 'Medical Consultation', path: '/services/consultation', icon: '🩺' },
+        { label: 'Consultation', path: '/services/consultation', icon: '🩺' },
         { label: 'Examinations', path: '/services/examinations', icon: '🔬' },
         { label: 'Laboratory', path: '/services/lab', icon: '🧪' }
       ]
@@ -187,7 +166,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
       icon: 'ℹ️'
     },
     {
-      label: 'Contact Us',
+      label: 'Contact',
       path: '/contact',
       icon: '📞'
     }
@@ -195,11 +174,13 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
 
   constructor(
     private router: Router,
-    private authService: Auth ,  
-    private userStateService: UserState  
+    private authService: Auth,
+    private userStateService: UserState
   ) {}
 
   ngOnInit() {
+    setTimeout(() => this.isVisible = true, 100);
+    
     this.subscriptions.add(
       this.router.events
         .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
@@ -216,6 +197,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
     );
 
     this.loadCurrentUser();
+    this.setupNavigationIndicator();
   }
 
   ngOnDestroy() {
@@ -225,7 +207,6 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
   private loadCurrentUser() {
     this.currentUser = this.userStateService.getCurrentUser();
     if (!this.currentUser) {
-      // ✅ تحديث طريقة جلب المستخدم الحالي
       this.authService.getCurrentUser().subscribe({
         next: (response) => {
           if (response.success && response.data) {
@@ -241,46 +222,89 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
 
   @HostListener('window:scroll')
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 20;
+    this.isScrolled = window.scrollY > 50;
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    
-    if (!target.closest('.user-menu') && !target.closest('.user-menu-btn')) {
-      this.isUserMenuOpen = false;
+  onDocumentClick(event: Event) {
+    this.handleUserDropdownClick(event);
+    this.handleSidebarClickOutside(event);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.isMobileMenuOpen) {
+      this.closeMobileMenu();
     }
-    
-    if (!target.closest('.mobile-menu') && !target.closest('.mobile-menu-btn')) {
-      this.isMobileMenuOpen = false;
+    if (this.isUserMenuOpen) {
+      this.closeUserMenu();
+    }
+  }
+
+  private handleUserDropdownClick(event: Event) {
+    if (!(event.target as HTMLElement).closest('.user-dropdown')) {
+      this.closeUserMenu();
+    }
+  }
+
+  private handleSidebarClickOutside(event: Event) {
+    if (this.isMobileMenuOpen && this.mobileSidebar) {
+      const target = event.target as HTMLElement;
+      const sidebarElement = this.mobileSidebar.nativeElement;
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      
+      if (!sidebarElement.contains(target) && !mobileMenuBtn?.contains(target)) {
+        this.closeMobileMenu();
+      }
     }
   }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
     if (this.isMobileMenuOpen) {
-      this.isUserMenuOpen = false;
+      document.body.style.overflow = 'hidden';
+      this.closeUserMenu();
+    } else {
+      document.body.style.overflow = '';
     }
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+    document.body.style.overflow = '';
   }
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
     if (this.isUserMenuOpen) {
-      this.isMobileMenuOpen = false;
+      this.closeMobileMenu();
     }
+  }
+
+  closeUserMenu() {
+    this.isUserMenuOpen = false;
   }
 
   toggleSubMenu(item: NavItem) {
     item.isExpanded = !item.isExpanded;
   }
 
-  closeMobileMenu() {
-    this.isMobileMenuOpen = false;
+  onLinkHover(event: MouseEvent, link: NavItem) {
+    const currentItems = this.getCurrentNavItems();
+    const index = currentItems.findIndex(l => l.path === link.path);
+    this.activeLinkIndex = index;
+    this.updateNavigationIndicator();
   }
 
-  closeUserMenu() {
-    this.isUserMenuOpen = false;
+  setupNavigationIndicator() {
+    this.updateNavigationIndicator();
+  }
+
+  updateNavigationIndicator() {
+    const currentItems = this.getCurrentNavItems();
+    const linkWidth = 100 / currentItems.length;
+    const transform = `translateX(${this.activeLinkIndex * linkWidth}%) scaleX(${linkWidth / 100})`;
+    this.indicatorTransform = transform;
   }
 
   private updateActiveStates() {
@@ -291,7 +315,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
                      (item.children?.some(child => currentPath === child.path));
       
       if (item.children) {
-        item.children.forEach((child: NavItem) => {
+        item.children.forEach(child => {
           child.isActive = currentPath === child.path;
         });
       }
@@ -306,7 +330,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
                        (item.children?.some(child => currentPath === child.path));
         
         if (item.children) {
-          item.children.forEach((child: NavItem) => {
+          item.children.forEach(child => {
             child.isActive = currentPath === child.path;
           });
         }
@@ -323,12 +347,6 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
     return this.navItems[userRole] || this.publicNavItems;
   }
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
-    this.closeMobileMenu();
-    this.closeUserMenu();
-  }
-
   hasAccess(item: NavItem): boolean {
     if (!item.roles || !this.currentUser?.role) {
       return true;
@@ -339,18 +357,21 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
   }
 
   login() {
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
     this.closeUserMenu();
+    this.closeMobileMenu();
   }
 
   register() {
-    this.router.navigate(['/auth/register']);
+    this.router.navigate(['/register']);
     this.closeUserMenu();
+    this.closeMobileMenu();
   }
 
   logout() {
-    this.authService.logout(); // ✅ التعديل لاستخدام الطريقة الجديدة
+    this.authService.logout();
     this.closeUserMenu();
+    this.closeMobileMenu();
   }
 
   goToProfile() {
@@ -359,6 +380,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
       this.router.navigate([`/${userRole}/profile`]);
     }
     this.closeUserMenu();
+    this.closeMobileMenu();
   }
 
   goToDashboard() {
@@ -367,6 +389,7 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
       this.router.navigate([`/${userRole}/dashboard`]);
     }
     this.closeUserMenu();
+    this.closeMobileMenu();
   }
 
   getDisplayName(): string {
@@ -399,19 +422,6 @@ export class Navbar  implements OnInit, OnDestroy { // ✅ تصحيح اسم ا�
   }
 
   isAuthenticated(): boolean {
-    return this.authService.isAuthenticated(); // ✅ استخدام الطريقة المحدثة
-  }
-
-  getNavItemsByRole(role: string): NavItem[] {
-    const userRole = role as UserRole;
-    if (userRole in this.navItems) {
-      return this.navItems[userRole];
-    }
-    return this.publicNavItems;
-  }
-
-  // ✅ دالة جديدة للتحقق من حالة التحميل
-  isLoading(): boolean {
-    return this.authService.isAuthenticated() && !this.currentUser;
+    return this.authService.isAuthenticated();
   }
 }

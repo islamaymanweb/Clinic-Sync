@@ -12,10 +12,7 @@ export const authRoutes: Routes = [
     loadComponent: () => import('./register/register').then(c => c.Register),
     canActivate: [authGuard]
   },
-  {
-    path: 'verify-email',
-    loadComponent: () => import('./verify-email/verify-email').then(c => c.VerifyEmail )
-  },
+   
   {
     path: 'forgot-password',
     loadComponent: () => import('./forgot-password/forgot-password').then(c => c.ForgotPassword)

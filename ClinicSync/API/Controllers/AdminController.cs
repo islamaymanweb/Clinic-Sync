@@ -78,7 +78,7 @@ namespace API.Controllers
                         u.Email,
                         Role = u.Role.ToString(),
                         u.IsActive,
-                        u.EmailVerified,
+                       
                         u.CreatedAt,
                         // ✅ بيانات محدودة فقط - أكثر أماناً
                         HasPatientProfile = u.Patient != null,

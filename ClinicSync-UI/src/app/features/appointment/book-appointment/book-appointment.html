@@ -1,0 +1,169 @@
+<!-- features/appointments/book-appointment/book-appointment.component.html -->
+<div class="book-appointment-page">
+  <div class="container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading doctor information...</p>
+    </div>
+
+    <!-- Doctor Information -->
+    <div *ngIf="doctor && !loading" class="doctor-section">
+      <div class="doctor-card">
+        <div class="doctor-image">
+          <img
+            [src]="doctor.profilePictureUrl || 'assets/images/doctor-placeholder.jpg'"
+            [alt]="doctor.fullName"
+            class="doctor-img"
+          />
+        </div>
+        <div class="doctor-info">
+          <h1 class="doctor-name">{{ doctor.fullName }}</h1>
+          <p class="doctor-specialty">{{ doctor.specialty }}</p>
+          <div class="doctor-details">
+            <div class="detail">
+              <span class="icon">🎓</span>
+              <span>{{ doctor.yearsOfExperience }} years experience</span>
+            </div>
+            <div class="detail">
+              <span class="icon">💵</span>
+              <span>Consultation: ${{ doctor.consultationFee }}</span>
+            </div>
+          </div>
+          <p *ngIf="doctor.bio" class="doctor-bio">{{ doctor.bio }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Appointment Booking Form -->
+    <div *ngIf="doctor && !loading" class="booking-section">
+      <form
+        [formGroup]="appointmentForm"
+        (ngSubmit)="onSubmit()"
+        class="booking-form"
+      >
+        <h2>Book Appointment</h2>
+
+        <!-- Date Selection -->
+        <div class="form-section">
+          <h3>Select Date</h3>
+          <div class="date-selection">
+            <div
+              *ngFor="let date of getNextAvailableDates()"
+              (click)="onDateSelect(date)"
+              [class.selected]="selectedDate === date"
+              [class.past]="isDateInPast(date)"
+              class="date-option"
+            >
+              <div class="date-day">{{ getDayName(date) }}</div>
+              <div class="date-number">{{ getDateNumber(date) }}</div>
+              <div class="date-month">{{ getMonthName(date) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Slots -->
+        <div class="form-section" *ngIf="selectedDate">
+          <h3>Available Time Slots</h3>
+
+          <div *ngIf="loadingAvailability" class="loading-time-slots">
+            <div class="loading-spinner small"></div>
+            <p>Loading available time slots...</p>
+          </div>
+
+          <div *ngIf="availability && !loadingAvailability" class="time-slots">
+            <div
+              *ngFor="let slot of availability.timeSlots"
+              (click)="onTimeSlotSelect(slot)"
+              [class.selected]="selectedTimeSlot === slot"
+              [class.available]="slot.isAvailable"
+              [class.unavailable]="!slot.isAvailable"
+              class="time-slot"
+            >
+              <div class="time-range">
+                {{ formatTime(slot.startTime) }} - {{ formatTime(slot.endTime)
+                }}
+              </div>
+              <div class="slot-status">
+                {{ slot.isAvailable ? 'Available' : 'Booked' }}
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="availability && !availability.success"
+            class="error-message"
+          >
+            {{ availability.message }}
+          </div>
+
+          <div
+            *ngIf="availability && availability.success && (!availability.timeSlots || availability.timeSlots.length === 0)"
+            class="no-slots"
+          >
+            No available time slots for this date.
+          </div>
+        </div>
+
+        <!-- Reason for Visit -->
+        <div class="form-section" *ngIf="selectedTimeSlot">
+          <h3>Reason for Visit (Optional)</h3>
+          <textarea
+            formControlName="reasonForVisit"
+            placeholder="Briefly describe the reason for your visit..."
+            rows="4"
+            class="reason-textarea"
+            maxlength="500"
+          >
+          </textarea>
+          <div class="char-count">
+            {{ appointmentForm.get('reasonForVisit')?.value?.length || 0 }}/500
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="form-section" *ngIf="selectedTimeSlot">
+          <h3>Appointment Summary</h3>
+          <div class="appointment-summary">
+            <div class="summary-item">
+              <strong>Doctor:</strong> {{ doctor.fullName }}
+            </div>
+            <div class="summary-item">
+              <strong>Date:</strong> {{ formatDisplayDate(selectedDate) }}
+            </div>
+            <div class="summary-item">
+              <strong>Time:</strong> {{ formatTime(selectedTimeSlot.startTime)
+              }} - {{ formatTime(selectedTimeSlot.endTime) }}
+            </div>
+            <div class="summary-item">
+              <strong>Duration:</strong> {{
+              getTimeSlotDuration(selectedTimeSlot) }}
+            </div>
+            <div class="summary-item">
+              <strong>Fee:</strong> ${{ doctor.consultationFee }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions" *ngIf="selectedTimeSlot">
+          <button
+            type="submit"
+            [disabled]="appointmentForm.invalid || loading"
+            class="submit-btn"
+          >
+            <span *ngIf="!loading">Confirm Appointment</span>
+            <span *ngIf="loading">Booking...</span>
+          </button>
+          <button
+            type="button"
+            (click)="router.navigate(['/doctors'])"
+            class="cancel-btn"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

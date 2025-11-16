@@ -13,10 +13,12 @@ namespace Core.Services
     {
         Task<AuthResponse> RegisterAsync(RegisterRequest request);
         Task<AuthResponse> LoginAsync(LoginRequest request, HttpContext httpContext);
-        Task<AuthResponse> VerifyEmailAsync(string token, string email);
+        //Task<AuthResponse> VerifyEmailAsync(string token, string email);
         Task<AuthResponse> ForgotPasswordAsync(string email);
         Task<AuthResponse> ResetPasswordAsync(ResetPasswordRequest request);
         Task<AuthResponse> CreateDoctorAsync(CreateDoctorRequest request, Guid adminId);
         Task<AppUser?> GetUserByIdAsync(Guid userId);
+        //Task<AuthResponse> ResendVerificationEmailAsync(string email);
+        //Task<AuthResponse> CheckEmailVerificationStatusAsync(string email);
     }
 }

@@ -45,9 +45,6 @@ namespace infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("EmailVerified")
-                        .HasColumnType("bit");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -119,17 +116,62 @@ namespace infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DoctorId")
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PatientId")
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReasonForVisit")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ReferenceNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("ReferenceNumber")
+                        .IsUnique();
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("PatientId", "AppointmentDate");
+
+                    b.HasIndex("DoctorId", "AppointmentDate", "Status");
+
+                    b.HasIndex("DoctorId", "AppointmentDate", "StartTime", "EndTime");
 
                     b.ToTable("Appointments");
                 });
@@ -183,12 +225,25 @@ namespace infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DoctorId")
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorId", "DayOfWeek")
+                        .IsUnique();
 
                     b.ToTable("DoctorSchedules");
                 });
@@ -224,6 +279,43 @@ namespace infrastructure.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("Core.Entities.ScheduleException", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan?>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("ExceptionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<TimeSpan?>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExceptionDate");
+
+                    b.HasIndex("DoctorId", "ExceptionDate");
+
+                    b.ToTable("ScheduleExceptions");
+                });
+
             modelBuilder.Entity("Core.Entities.Specialty", b =>
                 {
                     b.Property<Guid>("Id")
@@ -248,36 +340,6 @@ namespace infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Specialties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("58bbfead-fd2a-4786-899d-6c7afab35626"),
-                            Description = "Heart and cardiovascular system",
-                            IsActive = true,
-                            Name = "Cardiology"
-                        },
-                        new
-                        {
-                            Id = new Guid("662f9a54-c0c6-4c99-858f-35519ead11b8"),
-                            Description = "Skin, hair, and nails",
-                            IsActive = true,
-                            Name = "Dermatology"
-                        },
-                        new
-                        {
-                            Id = new Guid("a540b11d-39ff-4cff-b95e-e41a751eb9d0"),
-                            Description = "Children's health",
-                            IsActive = true,
-                            Name = "Pediatrics"
-                        },
-                        new
-                        {
-                            Id = new Guid("690e0c91-e7f6-4453-ba94-1a6e9756b17d"),
-                            Description = "Bones and muscles",
-                            IsActive = true,
-                            Name = "Orthopedics"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -413,13 +475,21 @@ namespace infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entities.Appointment", b =>
                 {
-                    b.HasOne("Core.Entities.Doctor", null)
+                    b.HasOne("Core.Entities.Doctor", "Doctor")
                         .WithMany("Appointments")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("Core.Entities.Patient", null)
+                    b.HasOne("Core.Entities.Patient", "Patient")
                         .WithMany("Appointments")
-                        .HasForeignKey("PatientId");
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Core.Entities.Doctor", b =>
@@ -443,9 +513,13 @@ namespace infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entities.DoctorSchedule", b =>
                 {
-                    b.HasOne("Core.Entities.Doctor", null)
+                    b.HasOne("Core.Entities.Doctor", "Doctor")
                         .WithMany("Schedules")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Core.Entities.Patient", b =>
@@ -457,6 +531,17 @@ namespace infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.ScheduleException", b =>
+                {
+                    b.HasOne("Core.Entities.Doctor", "Doctor")
+                        .WithMany("ScheduleExceptions")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -520,6 +605,8 @@ namespace infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.Doctor", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("ScheduleExceptions");
 
                     b.Navigation("Schedules");
                 });

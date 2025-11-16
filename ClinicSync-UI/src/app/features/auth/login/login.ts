@@ -11,7 +11,7 @@ import { LoginRequest } from '../../../shared/models/auth';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login  implements OnInit {
+export class Login implements OnInit {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
@@ -21,7 +21,7 @@ export class Login  implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: Auth ,
+    private authService: Auth,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -32,6 +32,12 @@ export class Login  implements OnInit {
     // الحصول على returnUrl من query parameters
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
     this.sessionExpired = this.route.snapshot.queryParams['sessionExpired'] === 'true';
+
+    // إذا تم تمرير email من صفحة التسجيل، نملأه تلقائياً
+    const emailFromQuery = this.route.snapshot.queryParams['email'];
+    if (emailFromQuery) {
+      this.loginForm.patchValue({ email: emailFromQuery });
+    }
 
     // إذا كان المستخدم مسجلاً بالفعل، توجيه للصفحة المناسبة
     if (this.authService.isAuthenticated()) {
@@ -70,14 +76,18 @@ export class Login  implements OnInit {
         if (response.success) {
           this.handleLoginSuccess();
         } else {
-          this.errorMessage = response.message || 'Login failed';
+          this.handleLoginError(response.message || 'Login failed');
         }
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.message || 'An error occurred during login';
+        this.handleLoginError(error.message || 'An error occurred during login');
       }
     });
+  }
+
+  private handleLoginError(errorMessage: string): void {
+    this.errorMessage = errorMessage;
   }
 
   togglePasswordVisibility(): void {

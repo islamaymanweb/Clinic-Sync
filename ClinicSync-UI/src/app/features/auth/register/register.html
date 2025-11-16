@@ -1,31 +1,86 @@
 <div class="register-wrapper">
   <div class="register-container">
-    <!-- Left Side - Branding -->
+    <!-- Left Side - Medical Branding -->
     <div class="brand-section">
       <div class="brand-content">
+        <!-- Medical Logo -->
         <div class="logo">
           <div class="logo-icon">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              <path d="M24 2L30 10L40 6L42 16L34 22L42 30L40 40L30 36L24 44L18 36L8 40L6 30L14 22L6 16L8 6L18 10L24 2Z" 
-                    fill="#2563eb"/>
-              <circle cx="24" cy="24" r="8" fill="#059669"/>
-              <path d="M20 24L22 26L28 20" stroke="white" stroke-width="3" stroke-linecap="round"/>
+              <path
+                d="M24 2L30 10L40 6L42 16L34 22L42 30L40 40L30 36L24 44L18 36L8 40L6 30L14 22L6 16L8 6L18 10L24 2Z"
+                fill="#2563eb"
+              />
+              <circle cx="24" cy="24" r="8" fill="#059669" />
+              <path
+                d="M20 24L22 26L28 20"
+                stroke="white"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
             </svg>
           </div>
-          <h1 class="brand-name">Clinic Sync</h1>
+          <div class="brand-text">
+            <h1 class="brand-name">ClinicSync</h1>
+            <p class="brand-tagline">Your Health, Our Priority</p>
+          </div>
         </div>
-        
-        <div class="security-illustration">
-          <div class="shield-icon">
+
+        <!-- Medical Illustration -->
+        <div class="medical-illustration">
+          <div class="stethoscope-icon">
             <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-              <path d="M60 10L70 20L85 15L88 30L75 40L88 50L85 65L70 60L60 70L50 60L35 65L32 50L45 40L32 30L35 15L50 20L60 10Z" 
-                    stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
-              <path d="M60 25C70 25 75 30 75 40C75 55 65 65 60 70C55 65 45 55 45 40C45 30 50 25 60 25Z" 
-                    stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+              <path
+                d="M40 40C46.6274 40 52 34.6274 52 28C52 21.3726 46.6274 16 40 16C33.3726 16 28 21.3726 28 28C28 34.6274 33.3726 40 40 40Z"
+                stroke="rgba(255,255,255,0.3)"
+                stroke-width="2"
+                fill="none"
+              />
+              <path
+                d="M80 40C86.6274 40 92 34.6274 92 28C92 21.3726 86.6274 16 80 16C73.3726 16 68 21.3726 68 28C68 34.6274 73.3726 40 80 40Z"
+                stroke="rgba(255,255,255,0.3)"
+                stroke-width="2"
+                fill="none"
+              />
+              <path
+                d="M40 40V60M80 40V60M60 60V80M60 80C66.6274 80 72 85.3726 72 92C72 98.6274 66.6274 104 60 104C53.3726 104 48 98.6274 48 92C48 85.3726 53.3726 80 60 80Z"
+                stroke="rgba(255,255,255,0.5)"
+                stroke-width="2"
+                stroke-linecap="round"
+                fill="none"
+              />
             </svg>
           </div>
-          <h2 class="security-title">Secure Registration</h2>
-          <p class="security-description">Join our healthcare platform with enterprise-grade security</p>
+          <h2 class="medical-title">Start Your Health Journey</h2>
+          <p class="medical-description">
+            Join thousands of patients managing their healthcare digitally with
+            ClinicSync
+          </p>
+        </div>
+
+        <!-- Medical Benefits -->
+        <div class="medical-benefits">
+          <div class="benefit-item">
+            <span class="benefit-icon">📅</span>
+            <div class="benefit-content">
+              <h4>Easy Appointments</h4>
+              <p>Book doctor visits in seconds</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">📱</span>
+            <div class="benefit-content">
+              <h4>Digital Records</h4>
+              <p>Access your medical history anytime</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🔒</span>
+            <div class="benefit-content">
+              <h4>Secure & Private</h4>
+              <p>HIPAA compliant data protection</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -33,17 +88,45 @@
     <!-- Right Side - Registration Form -->
     <div class="form-section">
       <div class="form-container">
+        <!-- Form Header -->
         <div class="form-header">
-          <h2 class="form-title">Create Account</h2>
-          <p class="form-subtitle">Join Clinic Sync and start managing your appointments digitally</p>
+          <h2 class="form-title">Create Your Account</h2>
+          <p class="form-subtitle">
+            Join ClinicSync and take control of your healthcare
+          </p>
         </div>
 
         <!-- Registration Form -->
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        <form
+          [formGroup]="registerForm"
+          (ngSubmit)="onSubmit()"
+          class="register-form"
+        >
           <!-- Full Name Field -->
           <div class="form-group">
-            <label for="fullName" class="input-label">Full Name</label>
-            <div class="input-container" [class.input-error]="fullName?.invalid && fullName?.touched">
+            <label for="fullName" class="input-label">
+              <span>Full Name</span>
+              <span class="required-asterisk">*</span>
+            </label>
+            <div
+              class="input-container"
+              [class.input-error]="fullName?.invalid && fullName?.touched"
+            >
+              <div class="input-prefix">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 10C11.6569 10 13 8.65685 13 7C13 5.34315 11.6569 4 10 4C8.34315 4 7 5.34315 7 7C7 8.65685 8.34315 10 10 10Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M15 16C15 13.7909 12.7614 12 10 12C7.23858 12 5 13.7909 5 16"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
               <input
                 type="text"
                 id="fullName"
@@ -52,17 +135,52 @@
                 placeholder="Enter your full name"
               />
             </div>
-            <div *ngIf="fullName?.invalid && fullName?.touched" class="error-message">
-              <span *ngIf="fullName?.errors?.['required']">Full name is required</span>
-              <span *ngIf="fullName?.errors?.['minlength']">Name must be at least 2 characters</span>
-              <span *ngIf="fullName?.errors?.['maxlength']">Name cannot exceed 100 characters</span>
+            <div
+              *ngIf="fullName?.invalid && fullName?.touched"
+              class="error-message"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M8 5V8M8 11H8.01"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span *ngIf="fullName?.errors?.['required']"
+                >Full name is required</span
+              >
+              <span *ngIf="fullName?.errors?.['minlength']"
+                >Name must be at least 2 characters</span
+              >
             </div>
           </div>
 
           <!-- Email Field -->
           <div class="form-group">
-            <label for="email" class="input-label">Email Address</label>
-            <div class="input-container" [class.input-error]="email?.invalid && email?.touched">
+            <label for="email" class="input-label">
+              <span>Email Address</span>
+              <span class="required-asterisk">*</span>
+            </label>
+            <div
+              class="input-container"
+              [class.input-error]="email?.invalid && email?.touched"
+            >
+              <div class="input-prefix">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M2.5 6.66667L8.232 10.596C8.688 10.924 9.312 10.924 9.768 10.596L15.5 6.66667M4.5 4H14.5C15.6046 4 16.5 4.89543 16.5 6V14C16.5 15.1046 15.6046 16 14.5 16H4.5C3.39543 16 2.5 15.1046 2.5 14V6C2.5 4.89543 3.39543 4 4.5 4Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
+                </svg>
+              </div>
               <input
                 type="email"
                 id="email"
@@ -72,15 +190,46 @@
               />
             </div>
             <div *ngIf="email?.invalid && email?.touched" class="error-message">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M8 5V8M8 11H8.01"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
               <span *ngIf="email?.errors?.['required']">Email is required</span>
-              <span *ngIf="email?.errors?.['email']">Please enter a valid email address</span>
+              <span *ngIf="email?.errors?.['email']"
+                >Please enter a valid email address</span
+              >
             </div>
           </div>
 
           <!-- Password Field -->
           <div class="form-group">
-            <label for="password" class="input-label">Password</label>
-            <div class="input-container" [class.input-error]="password?.invalid && password?.touched">
+            <label for="password" class="input-label">
+              <span>Password</span>
+              <span class="required-asterisk">*</span>
+            </label>
+            <div
+              class="input-container"
+              [class.input-error]="password?.invalid && password?.touched"
+            >
+              <div class="input-prefix">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M15 8H16C16.5304 8 17.0391 8.21071 17.4142 8.58579C17.7893 8.96086 18 9.46957 18 10V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V10C2 9.46957 2.21071 8.96086 2.58579 8.58579C2.96086 8.21071 3.46957 8 4 8H5M15 8V5C15 3.67392 14.4732 2.40215 13.5355 1.46447C12.5979 0.526784 11.3261 0 10 0C8.67392 0 7.40215 0.526784 6.46447 1.46447C5.52678 2.40215 5 3.67392 5 5V8M15 8H5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
+                </svg>
+              </div>
               <input
                 [type]="showPassword ? 'text' : 'password'"
                 id="password"
@@ -92,91 +241,164 @@
                 type="button"
                 class="password-toggle"
                 (click)="togglePasswordVisibility('password')"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path *ngIf="!showPassword" d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z" 
-                        fill="#6b7280"/>
-                  <path *ngIf="!showPassword" d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z" 
-                        fill="#ffffff"/>
-                  <path *ngIf="showPassword" d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19" 
-                        stroke="#6b7280" stroke-width="1.5" fill="none"/>
+                  <path
+                    *ngIf="!showPassword"
+                    d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    *ngIf="!showPassword"
+                    d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    *ngIf="showPassword"
+                    d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <!-- Password Strength Meter -->
             <div *ngIf="password?.value" class="password-strength">
               <div class="strength-meter">
-                <div class="strength-bar" [style.width.%]="getPasswordStrength()" 
-                     [class.weak]="getPasswordStrength() <= 40"
-                     [class.medium]="getPasswordStrength() > 40 && getPasswordStrength() <= 70"
-                     [class.strong]="getPasswordStrength() > 70"></div>
+                <div
+                  class="strength-bar"
+                  [style.width.%]="getPasswordStrength()"
+                  [class.weak]="getPasswordStrength() <= 40"
+                  [class.medium]="getPasswordStrength() > 40 && getPasswordStrength() <= 70"
+                  [class.strong]="getPasswordStrength() > 70"
+                ></div>
               </div>
               <div class="strength-label">
                 <span *ngIf="getPasswordStrength() <= 40">Weak</span>
-                <span *ngIf="getPasswordStrength() > 40 && getPasswordStrength() <= 70">Medium</span>
+                <span
+                  *ngIf="getPasswordStrength() > 40 && getPasswordStrength() <= 70"
+                  >Medium</span
+                >
                 <span *ngIf="getPasswordStrength() > 70">Strong</span>
               </div>
             </div>
 
             <!-- Password Requirements -->
             <div *ngIf="password?.value" class="password-requirements">
-              <div class="requirement" [class.valid]="password?.value?.length >= passwordRequirements.minLength">
+              <div
+                class="requirement"
+                [class.valid]="password?.value?.length >= passwordRequirements.minLength"
+              >
                 <span class="requirement-icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path *ngIf="password?.value?.length >= passwordRequirements.minLength" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle *ngIf="password?.value?.length < passwordRequirements.minLength" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                    <path
+                      *ngIf="password?.value?.length >= passwordRequirements.minLength"
+                      d="M12.5 4.5L6.5 12.5L3.5 9.5"
+                      stroke="#059669"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      *ngIf="password?.value?.length < passwordRequirements.minLength"
+                      cx="8"
+                      cy="8"
+                      r="5.5"
+                      stroke="#6b7280"
+                      stroke-width="1"
+                      fill="none"
+                    />
                   </svg>
                 </span>
                 At least {{ passwordRequirements.minLength }} characters
               </div>
-              <div class="requirement" [class.valid]="!password?.errors?.['uppercase']">
+              <div
+                class="requirement"
+                [class.valid]="!password?.errors?.['uppercase']"
+              >
                 <span class="requirement-icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path *ngIf="!password?.errors?.['uppercase']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle *ngIf="password?.errors?.['uppercase']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                    <path
+                      *ngIf="!password?.errors?.['uppercase']"
+                      d="M12.5 4.5L6.5 12.5L3.5 9.5"
+                      stroke="#059669"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      *ngIf="password?.errors?.['uppercase']"
+                      cx="8"
+                      cy="8"
+                      r="5.5"
+                      stroke="#6b7280"
+                      stroke-width="1"
+                      fill="none"
+                    />
                   </svg>
                 </span>
-                One uppercase letter (A-Z)
+                One uppercase letter
               </div>
-              <div class="requirement" [class.valid]="!password?.errors?.['lowercase']">
+              <div
+                class="requirement"
+                [class.valid]="!password?.errors?.['digit']"
+              >
                 <span class="requirement-icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path *ngIf="!password?.errors?.['lowercase']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle *ngIf="password?.errors?.['lowercase']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
+                    <path
+                      *ngIf="!password?.errors?.['digit']"
+                      d="M12.5 4.5L6.5 12.5L3.5 9.5"
+                      stroke="#059669"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      *ngIf="password?.errors?.['digit']"
+                      cx="8"
+                      cy="8"
+                      r="5.5"
+                      stroke="#6b7280"
+                      stroke-width="1"
+                      fill="none"
+                    />
                   </svg>
                 </span>
-                One lowercase letter (a-z)
-              </div>
-              <div class="requirement" [class.valid]="!password?.errors?.['digit']">
-                <span class="requirement-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path *ngIf="!password?.errors?.['digit']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle *ngIf="password?.errors?.['digit']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
-                  </svg>
-                </span>
-                One digit (0-9)
-              </div>
-              <div class="requirement" [class.valid]="!password?.errors?.['specialChar']">
-                <span class="requirement-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path *ngIf="!password?.errors?.['specialChar']" d="M12.5 4.5L6.5 12.5L3.5 9.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle *ngIf="password?.errors?.['specialChar']" cx="8" cy="8" r="5.5" stroke="#6b7280" stroke-width="1" fill="none"/>
-                  </svg>
-                </span>
-                One special character
+                One number
               </div>
             </div>
 
-            <div *ngIf="password?.invalid && password?.touched" class="error-message">
+            <div
+              *ngIf="password?.invalid && password?.touched"
+              class="error-message"
+            >
               <span *ngFor="let error of getPasswordErrors()">{{ error }}</span>
             </div>
           </div>
 
           <!-- Confirm Password Field -->
           <div class="form-group">
-            <label for="confirmPassword" class="input-label">Confirm Password</label>
-            <div class="input-container" [class.input-error]="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched">
+            <label for="confirmPassword" class="input-label">
+              <span>Confirm Password</span>
+              <span class="required-asterisk">*</span>
+            </label>
+            <div
+              class="input-container"
+              [class.input-error]="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched"
+            >
+              <div class="input-prefix">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M15 8H16C16.5304 8 17.0391 8.21071 17.4142 8.58579C17.7893 8.96086 18 9.46957 18 10V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V10C2 9.46957 2.21071 8.96086 2.58579 8.58579C2.96086 8.21071 3.46957 8 4 8H5M15 8V5C15 3.67392 14.4732 2.40215 13.5355 1.46447C12.5979 0.526784 11.3261 0 10 0C8.67392 0 7.40215 0.526784 6.46447 1.46447C5.52678 2.40215 5 3.67392 5 5V8M15 8H5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
+                </svg>
+              </div>
               <input
                 [type]="showConfirmPassword ? 'text' : 'password'"
                 id="confirmPassword"
@@ -188,48 +410,162 @@
                 type="button"
                 class="password-toggle"
                 (click)="togglePasswordVisibility('confirmPassword')"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path *ngIf="!showConfirmPassword" d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z" 
-                        fill="#6b7280"/>
-                  <path *ngIf="!showConfirmPassword" d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z" 
-                        fill="#ffffff"/>
-                  <path *ngIf="showConfirmPassword" d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19" 
-                        stroke="#6b7280" stroke-width="1.5" fill="none"/>
+                  <path
+                    *ngIf="!showConfirmPassword"
+                    d="M10 4C14.4183 4 18 7.58172 18 12C18 16.4183 14.4183 20 10 20C5.58172 20 2 16.4183 2 12C2 7.58172 5.58172 4 10 4Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    *ngIf="!showConfirmPassword"
+                    d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    *ngIf="showConfirmPassword"
+                    d="M2 2L18 18M10 4C14.4183 4 18 7.58172 18 12C18 12.9319 17.8136 13.8198 17.4749 14.6321M14.9497 13.9497C14.218 14.6814 13.1974 15.1464 12.0711 15.2063M5.52513 9.36791C5.18636 10.1802 5 11.0681 5 12C5 16.4183 8.58172 20 13 20C14.9319 20 16.8198 19.8136 17.6321 19.4749M10 4C8.06812 4 6.18018 4.18636 5.36791 4.52513M1 1L19 19"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
                 </svg>
               </button>
             </div>
-            <div *ngIf="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched" class="error-message">
-              <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</span>
-              <span *ngIf="registerForm.errors?.['passwordMismatch']">Passwords do not match</span>
+            <div
+              *ngIf="(confirmPassword?.invalid || registerForm.errors?.['passwordMismatch']) && confirmPassword?.touched"
+              class="error-message"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M8 5V8M8 11H8.01"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span *ngIf="confirmPassword?.errors?.['required']"
+                >Please confirm your password</span
+              >
+              <span *ngIf="registerForm.errors?.['passwordMismatch']"
+                >Passwords do not match</span
+              >
             </div>
+          </div>
+
+          <!-- Terms Agreement -->
+          <div class="terms-agreement">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                class="checkbox-input"
+                (change)="onTermsChange($event)"
+              />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-text">
+                I agree to the
+                <a href="#" class="terms-link">Terms of Service</a>
+                and
+                <a href="#" class="terms-link">Privacy Policy</a>
+              </span>
+            </label>
           </div>
 
           <!-- Submit Button -->
           <button
             type="submit"
             class="submit-button"
-            [disabled]="loading"
+            [disabled]="registerForm.invalid || loading || !termsAccepted"
             [class.loading]="loading"
           >
-            <span *ngIf="!loading">Create Account</span>
-            <div *ngIf="loading" class="loading-spinner">
+            <span *ngIf="!loading" class="button-text">
+              Create Medical Account
+            </span>
+            <div *ngIf="loading" class="loading-indicator">
               <div class="spinner"></div>
               <span>Creating Account...</span>
             </div>
           </button>
 
           <!-- Error Message -->
-          <div *ngIf="errorMessage" class="alert alert-error">
+          <div
+            *ngIf="errorMessage && !isUserExistsError"
+            class="alert alert-error"
+          >
             <div class="alert-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" 
-                      stroke="#ef4444" stroke-width="1.5"/>
-                <path d="M10 6V10M10 14H10.01" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+                <path
+                  d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M10 6V10M10 14H10.01"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
               </svg>
             </div>
             <div class="alert-content">
+              <h4>Registration Failed</h4>
               <p>{{ errorMessage }}</p>
+            </div>
+          </div>
+
+          <!-- User Exists Error Message -->
+          <div *ngIf="isUserExistsError" class="alert alert-warning">
+            <div class="alert-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z"
+                  stroke="#f59e0b"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M10 6V10M10 14H10.01"
+                  stroke="#f59e0b"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div class="alert-content">
+              <h4>Account Already Exists</h4>
+              <p>{{ errorMessage }}</p>
+              <p class="alert-hint">
+                <small
+                  >It looks like you already have an account with this email.
+                  Would you like to sign in instead?</small
+                >
+              </p>
+              <button
+                type="button"
+                class="go-to-login-btn"
+                (click)="goToLogin()"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  style="margin-right: 6px"
+                >
+                  <path
+                    d="M8 2L6 4L8 6M6 4H13M8 14L10 12L8 10M10 12H3"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Go to Sign In
+              </button>
             </div>
           </div>
 
@@ -237,10 +573,17 @@
           <div *ngIf="successMessage" class="alert alert-success">
             <div class="alert-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path
+                  d="M16.5 5.5L7.5 14.5L3.5 10.5"
+                  stroke="#059669"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </div>
             <div class="alert-content">
+              <h4>Welcome to ClinicSync! 🎉</h4>
               <p>{{ successMessage }}</p>
             </div>
           </div>
@@ -248,8 +591,14 @@
 
         <!-- Login Link -->
         <div class="login-link">
-          <p>Already have an account? <a routerLink="/auth/login">Sign in here</a></p>
+          <p>
+            Already have an account?
+            <a routerLink="/auth/login" class="link">Sign in to your account</a>
+          </p>
         </div>
+
+        <!-- Bottom Spacing for Mobile -->
+        <div class="mobile-bottom-spacing"></div>
       </div>
     </div>
   </div>

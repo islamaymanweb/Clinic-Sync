@@ -1,0 +1,336 @@
+ 
+.book-appointment-page {
+  padding: 2rem 0;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 4rem 0;
+  color: #6b7280;
+  
+  .loading-spinner {
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #2563eb;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.doctor-section {
+  margin-bottom: 2rem;
+}
+
+.doctor-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  gap: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.doctor-image {
+  flex-shrink: 0;
+  
+  .doctor-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    
+    @media (max-width: 768px) {
+      width: 120px;
+      height: 120px;
+    }
+  }
+}
+
+.doctor-info {
+  flex: 1;
+  
+  .doctor-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+  
+  .doctor-specialty {
+    color: #2563eb;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+}
+
+.doctor-details {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+  }
+}
+
+.doctor-bio {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.booking-section {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form {
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 2rem;
+  }
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+}
+
+.date-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.75rem;
+}
+
+.date-option {
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover:not(.past) {
+    border-color: #2563eb;
+  }
+  
+  &.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+  }
+  
+  &.past {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .date-day {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+  }
+  
+  .date-number {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+  }
+  
+  .date-month {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+}
+
+.loading-time-slots {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  
+  .loading-spinner.small {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.time-slot {
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover:not(.unavailable) {
+    border-color: #2563eb;
+  }
+  
+  &.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+  }
+  
+  &.available {
+    cursor: pointer;
+  }
+  
+  &.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .time-range {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+  
+  .slot-status {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+}
+
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.no-slots {
+  background: #fffbeb;
+  border: 1px solid #fed7aa;
+  color: #d97706;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.reason-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  resize: vertical;
+  
+  &:focus {
+    outline: none;
+    border-color: #2563eb;
+  }
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.appointment-summary {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+  
+  .submit-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover:not(:disabled) {
+      background: #1d4ed8;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .cancel-btn {
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    
+    &:hover {
+      background: #d1d5db;
+    }
+  }
+}

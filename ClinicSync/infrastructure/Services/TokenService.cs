@@ -33,14 +33,14 @@ namespace infrastructure.Services
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim("role", user.Role.ToString()),
-                new Claim("avatar", user.ProfilePictureUrl ?? ""),
-                new Claim("email_verified", user.EmailVerified.ToString())
-            };
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email!),
+        new Claim(ClaimTypes.Name, user.FullName),
+        new Claim("role", user.Role.ToString()),
+        new Claim("avatar", user.ProfilePictureUrl ?? "")
+        // تم حذف: new Claim("email_verified", user.EmailVerified.ToString())
+    };
 
             // Add role claims
             var userRoles = _userManager.GetRolesAsync(user).Result;
@@ -59,6 +59,26 @@ namespace infrastructure.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<ClaimsPrincipal> CreateClaimsPrincipalAsync(AppUser user, bool rememberMe = false)
+        {
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email!),
+        new Claim(ClaimTypes.Name, user.FullName),
+        new Claim("role", user.Role.ToString()),
+        new Claim("avatar", user.ProfilePictureUrl ?? "")
+        // تم حذف: new Claim("email_verified", user.EmailVerified.ToString())
+    };
+
+            // Add role claims
+            var userRoles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            return new ClaimsPrincipal(claimsIdentity);
         }
 
         public ClaimsPrincipal? ValidateToken(string token)
@@ -89,26 +109,7 @@ namespace infrastructure.Services
             }
         }
 
-        public async Task<ClaimsPrincipal> CreateClaimsPrincipalAsync(AppUser user, bool rememberMe = false)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim("role", user.Role.ToString()),
-                new Claim("avatar", user.ProfilePictureUrl ?? ""),
-                new Claim("email_verified", user.EmailVerified.ToString())
-            };
-
-            // Add role claims
-            var userRoles = await _userManager.GetRolesAsync(user);
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            return new ClaimsPrincipal(claimsIdentity);
-        }
-
+       
         public async Task ClearAuthCookie(HttpContext context)
         {
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

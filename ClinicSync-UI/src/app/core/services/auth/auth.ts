@@ -3,27 +3,27 @@ import { Api } from '../api/api';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
 import { ApiResponse, AuthResponse } from '../../../shared/models/api';
-import { LoginRequest, RegisterRequest, ResetPasswordRequest, VerifyEmailRequest } from '../../../shared/models/auth';
+import { LoginRequest, RegisterRequest, ResetPasswordRequest } from '../../../shared/models/auth';
 import { UserInfo } from '../../../shared/models/user';
 import { UserState } from './user-state';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Auth {
+ export class Auth {
   private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(
-    private apiService: Api ,
-    private userStateService: UserState ,
+    private apiService: Api,
+    private userStateService: UserState,
     private router: Router
   ) {
     this.checkAuthenticationStatus();
   }
 
   /**
-   * تسجيل الدخول - محدث للتعامل مع الكوكيز
+   * تسجيل الدخول - محدث بدون التحقق من البريد
    */
   login(credentials: LoginRequest): Observable<ApiResponse<AuthResponse>> {
     return this.apiService.login(credentials).pipe(
@@ -44,14 +44,31 @@ export class Auth {
   }
 
   /**
-   * تسجيل مستخدم جديد
+   * تسجيل مستخدم جديد - محدث بدون إرسال بريد تحقق
    */
   register(userData: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
     return this.apiService.register(userData).pipe(
       tap(response => {
         if (response.success) {
-          // لا نقوم بتسجيل الدخول تلقائياً بعد التسجيل
-          // يبقى المستخدم ينتظر التحقق من البريد
+          // ✅ تسجيل الدخول تلقائياً بعد التسجيل الناجح
+          const loginCredentials: LoginRequest = {
+            email: userData.email,
+            password: userData.password,
+            rememberMe: false
+          };
+          
+          // محاولة تسجيل الدخول تلقائياً
+          this.login(loginCredentials).subscribe({
+            next: () => {
+              // تم التسجيل والدخول تلقائياً
+            },
+            error: () => {
+              // في حالة فشل التسجيل التلقائي، توجيه لصفحة Login
+              this.router.navigate(['/auth/login'], {
+                queryParams: { email: userData.email, registered: 'true' }
+              });
+            }
+          });
         }
       }),
       catchError(error => {
@@ -88,34 +105,12 @@ export class Auth {
         if (response.success && response.data) {
           this.userStateService.setCurrentUser(response.data);
           this.isAuthenticatedSubject.next(true);
-        } else {
-          this.clearAuthData();
         }
+        // ✅ لا نمسح البيانات هنا - نتركها للمستدعي
       }),
       catchError(error => {
-        this.clearAuthData();
-        throw error;
-      })
-    );
-  }
-
-  /**
-   * تحقق من البريد الإلكتروني
-   */
-  verifyEmail(data: VerifyEmailRequest): Observable<ApiResponse<AuthResponse>> {
-    return this.apiService.verifyEmail(data).pipe(
-      tap(response => {
-        if (response.success) {
-          // بعد التحقق الناجح، يمكن توجيه المستخدم لصفحة Login
-          setTimeout(() => {
-            this.router.navigate(['/auth/login'], {
-              queryParams: { message: 'email_verified' }
-            });
-          }, 3000);
-        }
-      }),
-      catchError(error => {
-        this.handleAuthError(error);
+        // ✅ لا نمسح البيانات هنا - نتركها للمستدعي
+        // فقط نرمي الخطأ للمستدعي ليقرر ما يجب فعله
         throw error;
       })
     );
@@ -126,6 +121,12 @@ export class Auth {
    */
   forgotPassword(email: string): Observable<ApiResponse<AuthResponse>> {
     return this.apiService.forgotPassword(email).pipe(
+      tap(response => {
+        if (response.success) {
+          // عرض رسالة نجاح
+          console.log('Password reset email sent successfully');
+        }
+      }),
       catchError(error => {
         this.handleAuthError(error);
         throw error;
@@ -140,7 +141,7 @@ export class Auth {
     return this.apiService.resetPassword(data).pipe(
       tap(response => {
         if (response.success) {
-          // توجيه لصفحة Login بعد النجاح
+          // توجيه لصفحة Login بعد النجاح مع رسالة
           setTimeout(() => {
             this.router.navigate(['/auth/login'], {
               queryParams: { message: 'password_reset_success' }
@@ -157,16 +158,54 @@ export class Auth {
 
   /**
    * التحقق من حالة المصادقة - محدث للكوكيز
+   * ✅ لا يقوم بتسجيل الخروج تلقائياً عند refresh
    */
   private checkAuthenticationStatus(): void {
-    this.getCurrentUser().subscribe({
-      next: (response) => {
-        if (!response.success || !response.data) {
+    // ✅ التحقق من وجود user في localStorage أولاً
+    const currentUser = this.userStateService.getCurrentUser();
+    if (currentUser) {
+      // ✅ إذا كان هناك user محفوظ، نحدّث حالة المصادقة مباشرة
+      this.isAuthenticatedSubject.next(true);
+      console.log('✅ User found in storage, authentication restored:', currentUser.email);
+      
+      // ✅ محاولة تحديث البيانات من API في الخلفية (بدون إجبار)
+      this.getCurrentUser().subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            // ✅ تحديث بيانات المستخدم إذا نجح الطلب
+            this.userStateService.setCurrentUser(response.data);
+            this.isAuthenticatedSubject.next(true);
+            console.log('✅ User data refreshed from API');
+          }
+        },
+        error: (error) => {
+          // ✅ لا نقوم بأي شيء عند خطأ - المستخدم مسجل بالفعل
+          console.warn('⚠️ Failed to refresh user data (user still authenticated):', error);
+        }
+      });
+    } else {
+      // ✅ فقط إذا لم يكن هناك user محفوظ، نحاول التحقق من API
+      console.log('🔍 No user in storage, checking API...');
+      this.getCurrentUser().subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            // ✅ حفظ بيانات المستخدم
+            this.userStateService.setCurrentUser(response.data);
+            this.isAuthenticatedSubject.next(true);
+            console.log('✅ User authenticated from API');
+          } else {
+            // ✅ لا يوجد user - نمسح البيانات
+            this.clearAuthData();
+            console.log('❌ No user found in API');
+          }
+        },
+        error: (error) => {
+          // ✅ لا نقوم بتسجيل الخروج - فقط نترك الحالة كما هي
+          console.warn('⚠️ Failed to verify authentication (no user in storage):', error);
           this.clearAuthData();
         }
-      },
-      error: () => this.clearAuthData()
-    });
+      });
+    }
   }
 
   /**
@@ -189,8 +228,6 @@ export class Auth {
   private clearAuthData(): void {
     this.userStateService.clearCurrentUser();
     this.isAuthenticatedSubject.next(false);
-    
-    // لا نحتاج لمسح الكوكيز يدوياً لأن الـ Backend يتولى ذلك
   }
 
   /**
@@ -227,5 +264,13 @@ export class Auth {
   hasRole(role: string): boolean {
     const user = this.getCurrentUserValue();
     return user?.role === role;
+  }
+
+  /**
+   * التحقق من أي من الأدوار المطلوبة
+   */
+  hasAnyRole(roles: string[]): boolean {
+    const user = this.getCurrentUserValue();
+    return user ? roles.includes(user.role) : false;
   }
 }

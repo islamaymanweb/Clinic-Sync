@@ -1,10 +1,10 @@
-<nav
+<!-- <nav
   class="navbar"
   [class.scrolled]="isScrolled"
   [class.navbar-loading]="isLoading()"
 >
   <div class="navbar-container">
-    <!-- Logo & Brand -->
+ 
     <a class="navbar-brand" routerLink="/" (click)="closeMobileMenu()">
       <div class="logo-icon">🏥</div>
       <div class="logo-text">
@@ -13,11 +13,11 @@
       </div>
     </a>
 
-    <!-- Desktop Navigation Menu -->
+ 
     <div class="navbar-menu">
       <ng-container *ngFor="let item of getCurrentNavItems()">
         <div class="nav-item" *ngIf="hasAccess(item)">
-          <!-- Nav Link without Children -->
+ 
           <a
             *ngIf="!item.children || item.children.length === 0"
             class="nav-link"
@@ -28,8 +28,7 @@
             <span class="nav-icon">{{ item.icon }}</span>
             <span class="nav-label">{{ item.label }}</span>
           </a>
-
-          <!-- Nav Link with Dropdown -->
+ 
           <div *ngIf="item.children && item.children.length > 0">
             <div class="nav-link" [class.active]="item.isActive">
               <span class="nav-icon">{{ item.icon }}</span>
@@ -37,7 +36,7 @@
               <span class="dropdown-arrow">▼</span>
             </div>
 
-            <!-- Dropdown Menu -->
+          
             <div class="dropdown-menu">
               <a
                 *ngFor="let child of item.children"
@@ -55,9 +54,9 @@
       </ng-container>
     </div>
 
-    <!-- Desktop User Actions -->
+ 
     <div class="navbar-actions">
-      <!-- When User is Authenticated -->
+   
       <div class="user-menu-wrapper" *ngIf="isAuthenticated()">
         <button
           class="user-menu-btn"
@@ -76,7 +75,7 @@
           <span class="dropdown-arrow">▼</span>
         </button>
 
-        <!-- User Dropdown Menu -->
+ 
         <div class="user-menu" [class.open]="isUserMenuOpen">
           <div class="user-menu-header">
             <div class="user-menu-name">{{ getDisplayName() }}</div>
@@ -107,15 +106,14 @@
           </button>
         </div>
       </div>
-
-      <!-- When User is Not Authenticated -->
+ 
       <div class="auth-buttons" *ngIf="!isAuthenticated()">
         <button class="btn-login" (click)="login()">Login</button>
         <button class="btn-register" (click)="register()">Sign Up</button>
       </div>
     </div>
 
-    <!-- Mobile Menu Button -->
+ 
     <button
       class="mobile-menu-btn"
       [class.open]="isMobileMenuOpen"
@@ -131,13 +129,10 @@
   </div>
 </nav>
 
-<!-- ============================================= -->
-<!-- MOBILE MENU - FULL SCREEN -->
-<!-- ============================================= -->
-
+ 
 <div class="mobile-menu" [class.open]="isMobileMenuOpen">
   <div class="mobile-menu-container">
-    <!-- Mobile User Info (When Authenticated) -->
+ 
     <div class="mobile-user-info" *ngIf="isAuthenticated()">
       <div class="mobile-user-avatar">
         {{ getDisplayName().charAt(0).toUpperCase() }}
@@ -156,11 +151,11 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation Items -->
+ 
     <div class="mobile-nav-items">
       <ng-container *ngFor="let item of getCurrentNavItems()">
         <div class="mobile-nav-item" *ngIf="hasAccess(item)">
-          <!-- Nav Item without Children -->
+          
           <a
             *ngIf="!item.children || item.children.length === 0"
             class="mobile-nav-link"
@@ -174,8 +169,7 @@
               <span>{{ item.label }}</span>
             </div>
           </a>
-
-          <!-- Nav Item with Children -->
+ 
           <div *ngIf="item.children && item.children.length > 0">
             <div
               class="mobile-nav-link"
@@ -189,8 +183,7 @@
               </div>
               <span class="expand-arrow">▼</span>
             </div>
-
-            <!-- Mobile Submenu -->
+ 
             <div class="mobile-submenu" [class.expanded]="item.isExpanded">
               <a
                 *ngFor="let child of item.children"
@@ -208,8 +201,7 @@
         </div>
       </ng-container>
     </div>
-
-    <!-- Mobile Quick Actions (When Authenticated) -->
+ 
     <div class="mobile-quick-actions" *ngIf="isAuthenticated()">
       <button class="quick-action-btn btn-dashboard" (click)="goToDashboard()">
         <span>📊</span>
@@ -227,10 +219,376 @@
       </button>
     </div>
 
-    <!-- Mobile Auth Buttons (When Not Authenticated) -->
+ 
     <div class="mobile-auth-buttons" *ngIf="!isAuthenticated()">
       <button class="mobile-btn-login" (click)="login()">Login</button>
       <button class="mobile-btn-register" (click)="register()">Sign Up</button>
     </div>
   </div>
 </div>
+ -->
+<nav class="navbar" [class.scrolled]="isScrolled" [class.visible]="isVisible">
+  <!-- Animated Background -->
+  <div class="navbar__background">
+    <div class="navbar__shine"></div>
+  </div>
+
+  <div class="navbar__container">
+    <!-- Enhanced Logo -->
+    <a routerLink="/" class="navbar__logo" [class.animate]="isVisible">
+      <div class="logo__wrapper">
+        <span class="logo__icon">🏥</span>
+        <span class="logo__text">ClinicSync</span>
+        <div class="logo__glow"></div>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <ul class="navbar__links">
+      @for (link of getCurrentNavItems(); track link.path; let i = $index) { @if
+      (hasAccess(link)) {
+      <li [style.animation-delay]="i * 0.1 + 's'">
+        <!-- Simple Link -->
+        @if (!link.children || link.children.length === 0) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: link.path === '/'}"
+          class="navbar__link"
+          (mouseenter)="onLinkHover($event, link)"
+          (click)="closeMobileMenu()"
+        >
+          <span class="link__icon">{{ link.icon }}</span>
+          <span class="link__text">{{ link.label }}</span>
+          <span class="link__hover-effect"></span>
+          <span class="link__active-indicator"></span>
+        </a>
+        }
+
+        <!-- Dropdown Link -->
+        @if (link.children && link.children.length > 0) {
+        <div class="nav-dropdown">
+          <a
+            class="navbar__link dropdown-trigger"
+            [class.active]="link.isActive"
+            (mouseenter)="onLinkHover($event, link)"
+            (click)="toggleSubMenu(link)"
+          >
+            <span class="link__icon">{{ link.icon }}</span>
+            <span class="link__text">{{ link.label }}</span>
+            <span class="dropdown-arrow">▼</span>
+            <span class="link__hover-effect"></span>
+            <span class="link__active-indicator"></span>
+          </a>
+
+          <div class="dropdown-menu" [class.expanded]="link.isExpanded">
+            @for (child of link.children; track child.path) { @if
+            (hasAccess(child)) {
+            <a
+              [routerLink]="child.path"
+              class="dropdown-item"
+              routerLinkActive="active"
+              (click)="closeMobileMenu()"
+            >
+              <span class="item-icon">{{ child.icon }}</span>
+              <span class="item-text">{{ child.label }}</span>
+              <span class="item-arrow">→</span>
+            </a>
+            } }
+          </div>
+        </div>
+        }
+      </li>
+      } }
+    </ul>
+
+    <!-- User Actions -->
+    <div class="navbar__actions">
+      <!-- User Account Dropdown -->
+      <div class="user-dropdown">
+        <button
+          class="action-btn user-btn"
+          aria-label="User account"
+          (click)="toggleUserMenu()"
+          [class.active]="isUserMenuOpen"
+        >
+          <div class="user-avatar">
+            @if (isAuthenticated()) {
+            <div class="avatar-initials">
+              {{ getDisplayName().charAt(0).toUpperCase() }}
+            </div>
+            <div class="avatar-status" [class.online]="isAuthenticated()"></div>
+            } @else {
+            <svg
+              class="user-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            }
+          </div>
+          <div class="user-glow"></div>
+        </button>
+
+        @if (isUserMenuOpen) {
+        <div class="dropdown-menu user-menu" (click)="$event.stopPropagation()">
+          @if (isAuthenticated()) {
+          <div class="dropdown-header">
+            <div class="user-info">
+              <div class="user-name">{{ getDisplayName() }}</div>
+              <div class="user-email">{{ currentUser?.email }}</div>
+              <span
+                class="user-role"
+                [class.role-patient]="isPatient()"
+                [class.role-doctor]="isDoctor()"
+                [class.role-admin]="isAdmin()"
+              >
+                {{ getDisplayRole() }}
+              </span>
+            </div>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <a class="dropdown-item" (click)="goToDashboard()">
+            <span class="item-icon">📊</span>
+            <span class="item-text">Dashboard</span>
+            <span class="item-arrow">→</span>
+          </a>
+
+          <a class="dropdown-item" (click)="goToProfile()">
+            <span class="item-icon">👤</span>
+            <span class="item-text">My Profile</span>
+            <span class="item-arrow">→</span>
+          </a>
+
+          <div class="dropdown-divider"></div>
+
+          <button class="dropdown-item logout-btn" (click)="logout()">
+            <span class="item-icon">🚪</span>
+            <span class="item-text">Logout</span>
+          </button>
+          } @else {
+          <div class="dropdown-header">
+            <div class="user-info">
+              <div class="user-name">Welcome Guest</div>
+              <div class="user-email">Sign in to your account</div>
+            </div>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <a class="dropdown-item" (click)="login()">
+            <span class="item-icon">🔑</span>
+            <span class="item-text">Login</span>
+          </a>
+          <a class="dropdown-item" (click)="register()">
+            <span class="item-icon">📝</span>
+            <span class="item-text">Register</span>
+          </a>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button
+        class="mobile-menu-btn"
+        aria-label="Toggle menu"
+        (click)="toggleMobileMenu()"
+        [class.active]="isMobileMenuOpen"
+      >
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+        <div class="hamburger-glow"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Indicator -->
+  <div class="navbar__indicator" [style.transform]="indicatorTransform"></div>
+</nav>
+
+<!-- Mobile Overlay -->
+@if (isMobileMenuOpen) {
+<div class="mobile-overlay" (click)="closeMobileMenu()">
+  <div class="overlay-background"></div>
+</div>
+}
+
+<!-- Mobile Sidebar -->
+<aside class="mobile-sidebar" [class.open]="isMobileMenuOpen" #mobileSidebar>
+  <!-- Background -->
+  <div class="sidebar-background">
+    <div class="sidebar-particles"></div>
+  </div>
+
+  <!-- Close Button -->
+  <button
+    class="sidebar-close"
+    (click)="closeMobileMenu()"
+    aria-label="Close menu"
+  >
+    <div class="close-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </div>
+    <div class="close-glow"></div>
+  </button>
+
+  <!-- Logo -->
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🏥</span>
+      <span class="logo-text">ClinicSync</span>
+      <div class="logo-shine"></div>
+    </div>
+  </div>
+
+  <!-- User Info -->
+  @if (isAuthenticated()) {
+  <div class="mobile-user-info">
+    <div class="mobile-user-avatar">
+      {{ getDisplayName().charAt(0).toUpperCase() }}
+    </div>
+    <div class="mobile-user-details">
+      <div class="mobile-user-name">{{ getDisplayName() }}</div>
+      <div class="mobile-user-email">{{ currentUser?.email }}</div>
+      <span
+        class="mobile-user-role"
+        [class.role-patient]="isPatient()"
+        [class.role-doctor]="isDoctor()"
+        [class.role-admin]="isAdmin()"
+      >
+        {{ getDisplayRole() }}
+      </span>
+    </div>
+  </div>
+  }
+
+  <!-- Navigation Links -->
+  <nav class="sidebar-nav">
+    <h3 class="sidebar-section-title">
+      <span class="title-text">Navigation</span>
+      <div class="title-underline"></div>
+    </h3>
+
+    @for (link of getCurrentNavItems(); track link.path; let i = $index) { @if
+    (hasAccess(link)) {
+    <!-- Simple Link -->
+    @if (!link.children || link.children.length === 0) {
+    <a
+      [routerLink]="link.path"
+      class="sidebar-link"
+      (click)="closeMobileMenu()"
+      [style.animation-delay]="i * 0.05 + 's'"
+    >
+      <span class="link-icon">{{ link.icon }}</span>
+      <span class="link-text">{{ link.label }}</span>
+      <span class="link-arrow">→</span>
+      <div class="link-hover-effect"></div>
+    </a>
+    }
+
+    <!-- Dropdown Link -->
+    @if (link.children && link.children.length > 0) {
+    <div class="sidebar-dropdown">
+      <div
+        class="sidebar-link dropdown-trigger"
+        [class.expanded]="link.isExpanded"
+        (click)="toggleSubMenu(link)"
+        [style.animation-delay]="i * 0.05 + 's'"
+      >
+        <span class="link-icon">{{ link.icon }}</span>
+        <span class="link-text">{{ link.label }}</span>
+        <span class="expand-arrow">▼</span>
+        <div class="link-hover-effect"></div>
+      </div>
+
+      <div class="sidebar-submenu" [class.expanded]="link.isExpanded">
+        @for (child of link.children; track child.path) { @if (hasAccess(child))
+        {
+        <a
+          [routerLink]="child.path"
+          class="sidebar-submenu-item"
+          (click)="closeMobileMenu()"
+        >
+          <span class="submenu-icon">{{ child.icon }}</span>
+          <span class="submenu-text">{{ child.label }}</span>
+          <span class="submenu-arrow">→</span>
+        </a>
+        } }
+      </div>
+    </div>
+    } } }
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Quick Actions -->
+    <h3 class="sidebar-section-title">
+      <span class="title-text">Quick Actions</span>
+      <div class="title-underline"></div>
+    </h3>
+
+    @if (isAuthenticated()) {
+    <button class="sidebar-link" (click)="goToDashboard(); closeMobileMenu()">
+      <span class="link-icon">📊</span>
+      <span class="link-text">Dashboard</span>
+    </button>
+
+    <button class="sidebar-link" (click)="goToProfile(); closeMobileMenu()">
+      <span class="link-icon">👤</span>
+      <span class="link-text">My Profile</span>
+    </button>
+
+    <button
+      class="sidebar-link logout-btn"
+      (click)="logout(); closeMobileMenu()"
+    >
+      <span class="link-icon">🚪</span>
+      <span class="link-text">Logout</span>
+    </button>
+    } @else {
+    <button class="sidebar-link" (click)="login(); closeMobileMenu()">
+      <span class="link-icon">🔑</span>
+      <span class="link-text">Login</span>
+    </button>
+
+    <button class="sidebar-link" (click)="register(); closeMobileMenu()">
+      <span class="link-icon">📝</span>
+      <span class="link-text">Register</span>
+    </button>
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    <div class="footer-section">
+      <h4 class="footer-title">24/7 Support</h4>
+      <div class="footer-contacts">
+        <div class="contact-item">
+          <span class="contact-icon">📞</span>
+          <span class="contact-text">Emergency: 19001</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">💬</span>
+          <span class="contact-text">Live Chat</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
